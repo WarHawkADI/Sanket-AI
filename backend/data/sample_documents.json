@@ -1,0 +1,72 @@
+[
+  {
+    "id": "SAMPLE-INSPECTION",
+    "doc_type": "Inspection Report",
+    "format": "PDF / scanned form",
+    "expected_tags": [
+      "P-101A",
+      "VT-101",
+      "V-201"
+    ],
+    "title": "Vibration inspection \u2014 cooling water pump",
+    "text": "INSPECTION REPORT\nDate: 2025-06-01\nInspector: Suresh Nair\nEquipment: P-101A (Cooling Water Pump A)\nFinding: VT-101 radial vibration measured at 4.7 mm/s RMS, dominant frequency 47 Hz. Drive-end bearing temperature 68 \u00b0C. Trend rising from 2.1 mm/s baseline. ISO 10816-3 Zone C. Suspected upstream hydraulic excitation from control valve V-201 cavitation. Recommend expediting V-201 trim replacement per OISD-STD-130 rotating-equipment monitoring requirements. Next inspection due 2025-06-15."
+  },
+  {
+    "id": "SAMPLE-EMAIL",
+    "doc_type": "Email Archive",
+    "format": ".mbox / .eml",
+    "expected_tags": [
+      "V-201",
+      "P-101A"
+    ],
+    "title": "RE: V-201 noise complaint \u2014 shutdown planning",
+    "text": "From: Priya Mehta <priya.mehta@octaveplant.in>\nTo: Rajesh Kumar\nDate: 2025-04-04\nSubject: RE: V-201 noise\n\nRajesh \u2014 confirmed crackling/cavitation on V-201 during today's field walk. Body vibration 6.8 mm/s, acoustic emission 72 dB. Trim is ~15% worn. I've raised WO-2025-0891. We need the trim replacement in the May shutdown window. This is now driving elevated vibration on P-101A downstream. Please stage parts. \u2014 Priya"
+  },
+  {
+    "id": "SAMPLE-MANUAL",
+    "doc_type": "OEM Manual",
+    "format": "PDF (text)",
+    "expected_tags": [],
+    "title": "Centrifugal pump O&M manual \u2014 vibration limits",
+    "text": "SECTION 7 \u2014 CONDITION MONITORING\nModel: HES-350 end-suction centrifugal pump\nPer ISO 10816-3, alarm at 4.5 mm/s RMS and trip at 7.1 mm/s RMS for this machine class. Sustained operation above 4.5 mm/s indicates misalignment, unbalance, cavitation or bearing wear. Inspect suction strainer and upstream control valve for cavitation. Bearing temperature should not exceed 80 \u00b0C. Refer failure modes PU-C-VIB and PU-C-BRG."
+  },
+  {
+    "id": "SAMPLE-REGULATORY",
+    "doc_type": "Regulatory Submission",
+    "format": "PDF (form)",
+    "expected_tags": [
+      "P-101A",
+      "P-101B",
+      "K-501",
+      "M-101A",
+      "M-501"
+    ],
+    "title": "OISD-STD-130 compliance declaration \u2014 rotating equipment",
+    "text": "COMPLIANCE DECLARATION \u2014 OISD-STD-130\nFacility: Octave Demo Plant, Area A-01\nClause 6.2 requires vibration and bearing-temperature monitoring of critical rotating equipment at intervals not exceeding 90 days, with trended records maintained. Equipment in scope: P-101A, P-101B, K-501, M-101A, M-501. Prepared by Anil Sharma, 2025-05-20. Also references Factories Act 1948 \u00a721 and PESO SMPV(U) Rules for pressure systems."
+  },
+  {
+    "id": "SAMPLE-INCIDENT",
+    "doc_type": "Incident / Near-Miss",
+    "format": "Scanned form + OCR",
+    "expected_tags": [
+      "HE-301",
+      "P-101A",
+      "P-101B"
+    ],
+    "title": "Near-miss \u2014 heat exchanger fouling excursion",
+    "text": "NEAR-MISS RECORD\nDate: 2024-11-01\nReported by: Anil Sharma\nEquipment: HE-301 (Process Cooling Heat Exchanger)\nShell-side pressure drop rose to 1.8 bar versus 1.1 bar design; CW outlet temperature +2.3 \u00b0C. Fouling factor elevated. Root cause: inadequate water treatment. Failure mode HE-FOL. Recommend chemical clean and CPCB cooling-water quality review. Potential downstream impact on P-101A/B effective head."
+  },
+  {
+    "id": "SAMPLE-HANDOVER",
+    "doc_type": "Shift Handover / Tribal",
+    "format": "Free text",
+    "expected_tags": [
+      "P-101A",
+      "V-201",
+      "VT-101",
+      "P-101B"
+    ],
+    "title": "Night-shift handover note",
+    "text": "HANDOVER \u2014 Night Shift, 2025-06-01, Operator: Deepa Rao\nWatch P-101A \u2014 vibration creeping up (4.7 mm/s tonight). Old trick from the retiring foreman: after any V-201 cavitation event, always re-clearance the P-101A impeller, it never seats right otherwise. If VT-101 crosses 6.0, switch to P-101B before it trips at 7.1."
+  }
+]

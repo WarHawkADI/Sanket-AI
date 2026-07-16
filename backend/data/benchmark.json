@@ -1,0 +1,25 @@
+{
+  "description": "Domain-expert benchmark for Sanket AI. Each item scores the deterministic RCA engine on focus-asset detection, expected root-cause mention, expected citation presence, and answer keywords. Run: python scripts/run_benchmark.py",
+  "questions": [
+    {"id": "Q1", "query": "P-101A centrifugal pump showing 47Hz vibration spike. Find root cause.",
+     "expect_focus": "P-101A", "expect_mentions": ["V-201", "cavitation"], "expect_citation": "INS-2025-0847", "min_confidence": 80},
+    {"id": "Q2", "query": "K-501 compressor high vibration, what is the cause?",
+     "expect_focus": "K-501", "expect_mentions": ["F-501"], "expect_citation": "INS-2025-0508", "min_confidence": 70},
+    {"id": "Q3", "query": "V-201 control valve making crackling noise, diagnose it.",
+     "expect_focus": "V-201", "expect_mentions": ["cavitation"], "expect_citation": null, "min_confidence": 40},
+    {"id": "Q4", "query": "HE-301 heat exchanger outlet temperature rising, why?",
+     "expect_focus": "HE-301", "expect_mentions": ["foul"], "expect_citation": null, "min_confidence": 40},
+    {"id": "Q5", "query": "P-101A bearing temperature is climbing, root cause?",
+     "expect_focus": "P-101A", "expect_mentions": [], "expect_citation": null, "min_confidence": 40},
+    {"id": "Q6", "query": "Why is P-101A vibrating at 47 Hz?",
+     "expect_focus": "P-101A", "expect_mentions": ["V-201"], "expect_citation": "INS-2025-0847", "min_confidence": 80},
+    {"id": "Q7", "query": "F-501 lube oil filter high differential pressure investigation",
+     "expect_focus": "F-501", "expect_mentions": [], "expect_citation": null, "min_confidence": 40},
+    {"id": "Q8", "query": "Investigate abnormal condition on K-501",
+     "expect_focus": "K-501", "expect_mentions": [], "expect_citation": null, "min_confidence": 40},
+    {"id": "Q9", "query": "P-101B standby pump readiness — any concerns?",
+     "expect_focus": "P-101B", "expect_mentions": [], "expect_citation": null, "min_confidence": 30},
+    {"id": "Q10", "query": "TK-401 cooling water tank condition assessment",
+     "expect_focus": "TK-401", "expect_mentions": [], "expect_citation": null, "min_confidence": 30}
+  ]
+}

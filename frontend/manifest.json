@@ -1,0 +1,11 @@
+{
+  "name": "Sanket AI — Industrial Knowledge Intelligence",
+  "short_name": "Sanket AI",
+  "description": "Unified Asset & Operations Brain — graph-topology RCA, compliance, and knowledge intelligence.",
+  "start_url": "/ui/index.html",
+  "scope": "/ui/",
+  "display": "standalone",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "orientation": "any"
+}

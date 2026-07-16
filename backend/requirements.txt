@@ -1,0 +1,34 @@
+# ── Core runtime (required) ────────────────────────────────────────────────
+# The app runs fully on these alone — in-memory store + deterministic RCA,
+# no database and no API key needed.
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+python-dotenv==1.1.0
+aiofiles>=23.0.0
+requests==2.32.3
+tqdm==4.67.1
+
+# LLM / agent (used when a GROQ_API_KEY is set; import-safe without one)
+langgraph==0.3.34
+langchain-groq>=0.2.5
+groq>=0.9.0
+
+# Predictive-maintenance classifiers (wired in as an agent tool)
+scikit-learn==1.6.1
+joblib==1.4.2
+numpy>=2.0
+
+# ── Optional: Neo4j knowledge-graph backend ────────────────────────────────
+# Only needed to run against Neo4j instead of the in-memory store.
+neo4j==5.28.1
+
+# ── Optional: heavy ingestion stack (external datasets + embeddings) ────────
+# Needed only for `run_all` ingestion of real CSB/Azure datasets + BGE-M3
+# semantic search. The demo does NOT require these (keyword search is used).
+# pandas==2.2.3
+# pymupdf==1.25.5
+# sentence-transformers==3.4.1
+# xgboost==2.1.4
+
+# ── Dev / test ──────────────────────────────────────────────────────────────
+pytest>=8.0

@@ -1,0 +1,437 @@
+{
+  "version": "ISO 14224:2016",
+  "equipment_classes": [
+    {
+      "class": "CENTRIFUGAL_PUMP",
+      "iso_code": "PU-C",
+      "failure_modes": [
+        {
+          "code": "PU-C-VIB",
+          "description": "Excessive vibration",
+          "mechanisms": [
+            "Unbalance",
+            "Misalignment",
+            "Cavitation",
+            "Bearing wear",
+            "Resonance"
+          ],
+          "upstream_causes": [
+            "Upstream cavitation from control valve",
+            "NPSH margin loss",
+            "Suction strainer blockage"
+          ],
+          "iso14224_frequency": "HIGH",
+          "detection_methods": [
+            "Vibration monitoring (mm/s RMS)",
+            "Acoustic emission",
+            "Temperature"
+          ],
+          "typical_frequency_hz": [
+            10,
+            25,
+            47,
+            100
+          ]
+        },
+        {
+          "code": "PU-C-LEK",
+          "description": "External leakage \u2014 mechanical seal",
+          "mechanisms": [
+            "Seal face wear",
+            "O-ring degradation",
+            "Thermal cycling"
+          ],
+          "upstream_causes": [
+            "Dry running",
+            "Excessive vibration",
+            "Abrasive media"
+          ],
+          "iso14224_frequency": "MEDIUM",
+          "detection_methods": [
+            "Visual inspection",
+            "Leak detection sensor"
+          ],
+          "typical_frequency_hz": []
+        },
+        {
+          "code": "PU-C-CAP",
+          "description": "Reduced capacity / low flow",
+          "mechanisms": [
+            "Impeller wear",
+            "Recirculation",
+            "Air entrainment"
+          ],
+          "upstream_causes": [
+            "Upstream valve restriction",
+            "Suction cavitation",
+            "Suction strainer blockage"
+          ],
+          "iso14224_frequency": "MEDIUM",
+          "detection_methods": [
+            "Flow meter",
+            "Pressure gauges",
+            "Power consumption"
+          ],
+          "typical_frequency_hz": []
+        },
+        {
+          "code": "PU-C-BRG",
+          "description": "Bearing failure",
+          "mechanisms": [
+            "Fatigue",
+            "Lubrication failure",
+            "Contamination",
+            "Overloading"
+          ],
+          "upstream_causes": [
+            "Transmitted vibration from upstream equipment",
+            "Misalignment during installation"
+          ],
+          "iso14224_frequency": "HIGH",
+          "detection_methods": [
+            "Temperature (>80\u00b0C)",
+            "Vibration >7.1 mm/s RMS",
+            "Noise"
+          ],
+          "typical_frequency_hz": [
+            47,
+            94
+          ]
+        }
+      ]
+    },
+    {
+      "class": "CONTROL_VALVE",
+      "iso_code": "VA-C",
+      "failure_modes": [
+        {
+          "code": "VA-C-CAV",
+          "description": "Cavitation",
+          "mechanisms": [
+            "High pressure differential",
+            "Trim wear",
+            "Flashing"
+          ],
+          "downstream_effects": [
+            "Transmitted vibration to connected pumps",
+            "Pipe erosion",
+            "Noise"
+          ],
+          "iso14224_frequency": "HIGH",
+          "detection_methods": [
+            "Noise (crackling/popping)",
+            "Vibration on body",
+            "Trim inspection"
+          ],
+          "typical_frequency_hz": []
+        },
+        {
+          "code": "VA-C-STK",
+          "description": "Valve stuck / fails to open or close",
+          "mechanisms": [
+            "Actuator failure",
+            "Stem packing tight",
+            "Process deposits"
+          ],
+          "downstream_effects": [
+            "Loss of flow control",
+            "Process deviation"
+          ],
+          "iso14224_frequency": "MEDIUM",
+          "detection_methods": [
+            "Positioner feedback",
+            "Control room deviation alarm"
+          ],
+          "typical_frequency_hz": []
+        },
+        {
+          "code": "VA-C-LEK",
+          "description": "Internal leakage (seat leakage)",
+          "mechanisms": [
+            "Seat erosion",
+            "Trim wear",
+            "Cavitation damage"
+          ],
+          "downstream_effects": [
+            "Reduced pressure differential",
+            "Flow measurement error"
+          ],
+          "iso14224_frequency": "MEDIUM",
+          "detection_methods": [
+            "Acoustic emission",
+            "Thermal imaging",
+            "Seat test"
+          ],
+          "typical_frequency_hz": []
+        }
+      ]
+    },
+    {
+      "class": "HEAT_EXCHANGER",
+      "iso_code": "HE",
+      "failure_modes": [
+        {
+          "code": "HE-FOL",
+          "description": "Fouling / reduced heat transfer",
+          "mechanisms": [
+            "Scale deposition",
+            "Biological fouling",
+            "Corrosion products"
+          ],
+          "upstream_causes": [
+            "Poor water treatment",
+            "High turbidity"
+          ],
+          "iso14224_frequency": "HIGH",
+          "detection_methods": [
+            "Outlet temperature deviation",
+            "Pressure drop increase",
+            "HEI"
+          ],
+          "typical_frequency_hz": []
+        },
+        {
+          "code": "HE-TUB",
+          "description": "Tube failure / leakage",
+          "mechanisms": [
+            "Corrosion",
+            "Erosion",
+            "Vibration fatigue",
+            "Pitting"
+          ],
+          "upstream_causes": [
+            "High velocity flow",
+            "Flow-induced vibration"
+          ],
+          "iso14224_frequency": "LOW",
+          "detection_methods": [
+            "Pressure test",
+            "Helium leak test",
+            "Process contamination"
+          ],
+          "typical_frequency_hz": []
+        }
+      ]
+    },
+    {
+      "class": "CENTRIFUGAL_COMPRESSOR",
+      "iso_code": "CO-C",
+      "failure_modes": [
+        {
+          "code": "CO-C-SRG",
+          "description": "Surge / flow instability",
+          "mechanisms": [
+            "Low flow operation",
+            "Anti-surge valve fault",
+            "Discharge blockage"
+          ],
+          "upstream_causes": [
+            "Suction filter blockage",
+            "Process upset"
+          ],
+          "iso14224_frequency": "HIGH",
+          "detection_methods": [
+            "Flow oscillation",
+            "Axial vibration",
+            "Discharge pressure swing"
+          ],
+          "typical_frequency_hz": []
+        },
+        {
+          "code": "CO-C-VIB",
+          "description": "High vibration / rotor instability",
+          "mechanisms": [
+            "Unbalance",
+            "Oil whirl",
+            "Blade fouling",
+            "Coupling wear"
+          ],
+          "upstream_causes": [
+            "Lube oil contamination",
+            "Bearing degradation"
+          ],
+          "iso14224_frequency": "HIGH",
+          "detection_methods": [
+            "Proximity probe (\u00b5m)",
+            "Bearing temperature"
+          ],
+          "typical_frequency_hz": [
+            50,
+            100,
+            150
+          ]
+        },
+        {
+          "code": "CO-C-SEAL",
+          "description": "Dry-gas seal failure",
+          "mechanisms": [
+            "Seal face contamination",
+            "Reverse pressurisation",
+            "Particle ingress"
+          ],
+          "upstream_causes": [
+            "Seal gas filter fouling",
+            "Lube oil migration"
+          ],
+          "iso14224_frequency": "MEDIUM",
+          "detection_methods": [
+            "Seal gas flow",
+            "Vent leakage rate"
+          ],
+          "typical_frequency_hz": []
+        }
+      ]
+    },
+    {
+      "class": "ELECTRIC_MOTOR",
+      "iso_code": "EM",
+      "failure_modes": [
+        {
+          "code": "EM-WND",
+          "description": "Stator winding insulation failure",
+          "mechanisms": [
+            "Thermal ageing",
+            "Moisture ingress",
+            "Voltage transients"
+          ],
+          "upstream_causes": [
+            "Overloading",
+            "Cooling loss"
+          ],
+          "iso14224_frequency": "MEDIUM",
+          "detection_methods": [
+            "Insulation resistance",
+            "Partial discharge",
+            "Winding temperature"
+          ],
+          "typical_frequency_hz": []
+        },
+        {
+          "code": "EM-BRG",
+          "description": "Motor bearing failure",
+          "mechanisms": [
+            "Lubrication failure",
+            "Shaft currents",
+            "Contamination"
+          ],
+          "upstream_causes": [
+            "Transmitted vibration",
+            "VFD bearing currents"
+          ],
+          "iso14224_frequency": "HIGH",
+          "detection_methods": [
+            "Vibration envelope",
+            "Temperature",
+            "SPM"
+          ],
+          "typical_frequency_hz": [
+            120,
+            240
+          ]
+        }
+      ]
+    },
+    {
+      "class": "STRAINER",
+      "iso_code": "ST",
+      "failure_modes": [
+        {
+          "code": "ST-BLK",
+          "description": "Strainer blockage / high differential pressure",
+          "mechanisms": [
+            "Debris accumulation",
+            "Scale",
+            "Corrosion products"
+          ],
+          "downstream_effects": [
+            "Suction starvation",
+            "Pump cavitation",
+            "Flow reduction"
+          ],
+          "iso14224_frequency": "HIGH",
+          "detection_methods": [
+            "Differential pressure",
+            "Flow reduction"
+          ],
+          "typical_frequency_hz": []
+        }
+      ]
+    },
+    {
+      "class": "STORAGE_VESSEL",
+      "iso_code": "VE",
+      "failure_modes": [
+        {
+          "code": "VE-COR",
+          "description": "Internal corrosion / wall thinning",
+          "mechanisms": [
+            "Pitting",
+            "Microbially induced corrosion",
+            "Erosion-corrosion"
+          ],
+          "upstream_causes": [
+            "Water chemistry excursion",
+            "Coating breakdown"
+          ],
+          "iso14224_frequency": "MEDIUM",
+          "detection_methods": [
+            "UT thickness survey",
+            "Visual/borescope"
+          ],
+          "typical_frequency_hz": []
+        }
+      ]
+    }
+  ],
+  "co_failure_statistics": [
+    {
+      "primary": "VA-C-CAV",
+      "secondary": "PU-C-VIB",
+      "correlation": 0.72,
+      "note": "Control-valve cavitation is the leading upstream cause of centrifugal-pump vibration in cooling-water circuits",
+      "occurrences_per_100_plant_years": 68
+    },
+    {
+      "primary": "PU-C-VIB",
+      "secondary": "PU-C-BRG",
+      "correlation": 0.85,
+      "note": "Sustained vibration >7.1 mm/s leads to bearing failure within 2\u20136 weeks",
+      "occurrences_per_100_plant_years": 55
+    },
+    {
+      "primary": "ST-BLK",
+      "secondary": "PU-C-VIB",
+      "correlation": 0.61,
+      "note": "Suction-strainer blockage starves pump suction and induces cavitation-driven vibration",
+      "occurrences_per_100_plant_years": 41
+    },
+    {
+      "primary": "HE-FOL",
+      "secondary": "PU-C-CAP",
+      "correlation": 0.48,
+      "note": "Heat-exchanger fouling increases back-pressure, reducing pump effective head",
+      "occurrences_per_100_plant_years": 30
+    },
+    {
+      "primary": "CO-C-VIB",
+      "secondary": "EM-BRG",
+      "correlation": 0.57,
+      "note": "Compressor rotor vibration transmits to the driver motor bearings via the coupling",
+      "occurrences_per_100_plant_years": 26
+    },
+    {
+      "primary": "CO-C-SRG",
+      "secondary": "CO-C-VIB",
+      "correlation": 0.66,
+      "note": "Repeated surge events accelerate rotor instability and blade fouling",
+      "occurrences_per_100_plant_years": 22
+    },
+    {
+      "primary": "ST-BLK",
+      "secondary": "CO-C-VIB",
+      "correlation": 0.58,
+      "note": "Lube-oil filter blockage starves compressor bearings and drives rotor vibration/oil whirl",
+      "occurrences_per_100_plant_years": 24
+    }
+  ]
+}

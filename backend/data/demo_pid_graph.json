@@ -1,0 +1,346 @@
+{
+  "pid_id": "PID-CWS-001",
+  "title": "Cooling Water & Compressor Train \u2014 Unit 01",
+  "revision": "Rev D",
+  "plant": "Octave Demo Plant",
+  "area": "A-01",
+  "equipment": [
+    {
+      "tag": "TK-401",
+      "name": "Cooling Water Storage Tank",
+      "type": "STORAGE_VESSEL",
+      "iso15926_class": "StorageVessel",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "MEDIUM",
+      "description": "Open atmospheric cooling water storage, lined carbon steel",
+      "capacity_m3": 500
+    },
+    {
+      "tag": "ST-101",
+      "name": "CW Suction Strainer",
+      "type": "STRAINER",
+      "iso15926_class": "Strainer",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "MEDIUM",
+      "description": "Duplex basket strainer on pump suction header, 40 mesh"
+    },
+    {
+      "tag": "V-201",
+      "name": "CW Supply Control Valve",
+      "type": "CONTROL_VALVE",
+      "iso15926_class": "ControlValve",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "HIGH",
+      "description": "Pneumatically actuated globe control valve on CW supply header",
+      "cv": 120,
+      "trim_type": "EQUAL_PERCENTAGE"
+    },
+    {
+      "tag": "P-101A",
+      "name": "Cooling Water Pump A",
+      "type": "CENTRIFUGAL_PUMP",
+      "iso15926_class": "CentrifugalPump",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "HIGH",
+      "description": "Primary CW supply pump, horizontal end-suction centrifugal",
+      "design_flow_m3h": 350,
+      "motor_kw": 55
+    },
+    {
+      "tag": "P-101B",
+      "name": "Cooling Water Pump B (Standby)",
+      "type": "CENTRIFUGAL_PUMP",
+      "iso15926_class": "CentrifugalPump",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "HIGH",
+      "description": "Standby CW supply pump, auto-start on P-101A trip",
+      "design_flow_m3h": 350,
+      "motor_kw": 55
+    },
+    {
+      "tag": "M-101A",
+      "name": "P-101A Drive Motor",
+      "type": "ELECTRIC_MOTOR",
+      "iso15926_class": "ElectricMotor",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "HIGH",
+      "description": "55 kW TEFC induction motor driving P-101A",
+      "motor_kw": 55
+    },
+    {
+      "tag": "HE-301",
+      "name": "Process Cooling Heat Exchanger",
+      "type": "HEAT_EXCHANGER",
+      "iso15926_class": "HeatExchanger",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "HIGH",
+      "description": "Shell & tube, cooling water on shell side, process fluid on tube side",
+      "duty_kw": 1200
+    },
+    {
+      "tag": "FT-101",
+      "name": "CW Supply Flow Transmitter",
+      "type": "FLOW_TRANSMITTER",
+      "iso15926_class": "FlowTransmitter",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "MEDIUM",
+      "description": "Magnetic flow meter on CW supply header downstream of pumps"
+    },
+    {
+      "tag": "PT-101",
+      "name": "CW Supply Pressure Transmitter",
+      "type": "PRESSURE_TRANSMITTER",
+      "iso15926_class": "PressureTransmitter",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "MEDIUM",
+      "description": "Pressure transmitter at P-101A/B discharge header"
+    },
+    {
+      "tag": "VT-101",
+      "name": "P-101A Vibration Transmitter",
+      "type": "VIBRATION_TRANSMITTER",
+      "iso15926_class": "VibrationTransmitter",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-01",
+      "criticality": "HIGH",
+      "description": "Radial vibration sensor on P-101A drive-end bearing",
+      "alarm_high_mm_s": 4.5,
+      "trip_mm_s": 7.1
+    },
+    {
+      "tag": "TK-501",
+      "name": "Lube Oil Reservoir",
+      "type": "STORAGE_VESSEL",
+      "iso15926_class": "StorageVessel",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-02",
+      "criticality": "MEDIUM",
+      "description": "Compressor lube-oil reservoir with heater and level control",
+      "medium": "lube_oil"
+    },
+    {
+      "tag": "P-501",
+      "name": "Lube Oil Pump",
+      "type": "CENTRIFUGAL_PUMP",
+      "iso15926_class": "CentrifugalPump",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-02",
+      "criticality": "HIGH",
+      "description": "Main lube-oil pump feeding compressor bearings",
+      "medium": "lube_oil"
+    },
+    {
+      "tag": "F-501",
+      "name": "Lube Oil Filter",
+      "type": "STRAINER",
+      "iso15926_class": "Strainer",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-02",
+      "criticality": "HIGH",
+      "description": "Duplex 10-micron lube-oil filter upstream of compressor bearings",
+      "medium": "lube_oil"
+    },
+    {
+      "tag": "K-501",
+      "name": "Process Gas Compressor",
+      "type": "CENTRIFUGAL_COMPRESSOR",
+      "iso15926_class": "CentrifugalCompressor",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-02",
+      "criticality": "HIGH",
+      "description": "Two-stage centrifugal process-gas compressor, dry-gas sealed"
+    },
+    {
+      "tag": "M-501",
+      "name": "K-501 Drive Motor",
+      "type": "ELECTRIC_MOTOR",
+      "iso15926_class": "ElectricMotor",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-02",
+      "criticality": "HIGH",
+      "description": "1.2 MW induction motor driving K-501 via gearbox"
+    },
+    {
+      "tag": "VT-501",
+      "name": "K-501 Vibration Probe",
+      "type": "VIBRATION_TRANSMITTER",
+      "iso15926_class": "VibrationTransmitter",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-02",
+      "criticality": "HIGH",
+      "description": "Proximity probe on K-501 outboard bearing",
+      "alarm_high_um": 50,
+      "trip_um": 75
+    },
+    {
+      "tag": "V-501",
+      "name": "Anti-Surge Valve",
+      "type": "CONTROL_VALVE",
+      "iso15926_class": "ControlValve",
+      "isa95_level": "EQUIPMENT_MODULE",
+      "area": "A-02",
+      "criticality": "HIGH",
+      "description": "Fast-acting anti-surge recycle valve for K-501",
+      "cv": 200
+    }
+  ],
+  "connections": [
+    {
+      "from_tag": "TK-401",
+      "to_tag": "ST-101",
+      "pipe_tag": "CWS-01-12IN",
+      "medium": "cooling_water",
+      "flow_direction": "SUPPLY",
+      "nominal_diameter_in": 12,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "ST-101",
+      "to_tag": "V-201",
+      "pipe_tag": "CWS-02-12IN",
+      "medium": "cooling_water",
+      "flow_direction": "SUPPLY",
+      "nominal_diameter_in": 12,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "V-201",
+      "to_tag": "P-101A",
+      "pipe_tag": "CWS-03-10IN",
+      "medium": "cooling_water",
+      "flow_direction": "SUPPLY",
+      "nominal_diameter_in": 10,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "V-201",
+      "to_tag": "P-101B",
+      "pipe_tag": "CWS-04-10IN",
+      "medium": "cooling_water",
+      "flow_direction": "SUPPLY",
+      "nominal_diameter_in": 10,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "P-101A",
+      "to_tag": "HE-301",
+      "pipe_tag": "CWS-05-10IN",
+      "medium": "cooling_water",
+      "flow_direction": "DISCHARGE",
+      "nominal_diameter_in": 10,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "P-101B",
+      "to_tag": "HE-301",
+      "pipe_tag": "CWS-06-10IN",
+      "medium": "cooling_water",
+      "flow_direction": "DISCHARGE",
+      "nominal_diameter_in": 10,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "P-101A",
+      "to_tag": "FT-101",
+      "pipe_tag": "CWS-05-10IN",
+      "medium": "cooling_water",
+      "flow_direction": "DISCHARGE",
+      "nominal_diameter_in": 10,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "P-101A",
+      "to_tag": "PT-101",
+      "pipe_tag": "CWS-05-10IN",
+      "medium": "cooling_water",
+      "flow_direction": "DISCHARGE",
+      "nominal_diameter_in": 10,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "M-101A",
+      "to_tag": "P-101A",
+      "pipe_tag": "",
+      "medium": "mechanical",
+      "flow_direction": "DRIVE",
+      "nominal_diameter_in": 0,
+      "spec": "CS-150#",
+      "connection_type": "MECHANICAL_DRIVE"
+    },
+    {
+      "from_tag": "P-101A",
+      "to_tag": "VT-101",
+      "pipe_tag": "",
+      "medium": null,
+      "flow_direction": null,
+      "nominal_diameter_in": 0,
+      "spec": "CS-150#",
+      "connection_type": "MECHANICAL_SENSOR"
+    },
+    {
+      "from_tag": "TK-501",
+      "to_tag": "P-501",
+      "pipe_tag": "LO-01-4IN",
+      "medium": "lube_oil",
+      "flow_direction": "SUPPLY",
+      "nominal_diameter_in": 4,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "P-501",
+      "to_tag": "F-501",
+      "pipe_tag": "LO-02-4IN",
+      "medium": "lube_oil",
+      "flow_direction": "DISCHARGE",
+      "nominal_diameter_in": 4,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "F-501",
+      "to_tag": "K-501",
+      "pipe_tag": "LO-03-3IN",
+      "medium": "lube_oil",
+      "flow_direction": "SUPPLY",
+      "nominal_diameter_in": 3,
+      "spec": "CS-150#"
+    },
+    {
+      "from_tag": "M-501",
+      "to_tag": "K-501",
+      "pipe_tag": "",
+      "medium": "mechanical",
+      "flow_direction": "DRIVE",
+      "nominal_diameter_in": 0,
+      "spec": "CS-150#",
+      "connection_type": "MECHANICAL_DRIVE"
+    },
+    {
+      "from_tag": "K-501",
+      "to_tag": "VT-501",
+      "pipe_tag": "",
+      "medium": null,
+      "flow_direction": null,
+      "nominal_diameter_in": 0,
+      "spec": "CS-150#",
+      "connection_type": "MECHANICAL_SENSOR"
+    },
+    {
+      "from_tag": "K-501",
+      "to_tag": "V-501",
+      "pipe_tag": "PG-01-8IN",
+      "medium": "process_gas",
+      "flow_direction": "RECYCLE",
+      "nominal_diameter_in": 8,
+      "spec": "CS-150#"
+    }
+  ]
+}

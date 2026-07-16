@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0d12">
+<link rel="manifest" href="/ui/manifest.json">
+<title>Sanket AI — Industrial Knowledge Intelligence</title>
+<style>
+:root{
+  --bg:#0b0d12;--surface:#111419;--surface-2:#171b22;--surface-3:#1e232c;
+  --border:#22262f;--border-strong:#2d323d;
+  --text:#eceef3;--text-2:#a2a9b6;--text-3:#646b78;
+  --accent:#5b8cf5;--accent-soft:rgba(91,140,245,.14);--accent-line:rgba(91,140,245,.4);
+  --crit:#f0564d;--warn:#f2a63b;--ok:#33cc95;--info:#5b8cf5;--purple:#a879f0;
+  --crit-soft:rgba(240,86,77,.13);--warn-soft:rgba(242,166,59,.13);--ok-soft:rgba(51,204,149,.13);--purple-soft:rgba(168,121,240,.14);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
+  --mono:'SF Mono','JetBrains Mono','Cascadia Code',ui-monospace,Consolas,monospace;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:20px;--s6:24px;--s8:32px;
+  --r:8px;--r-lg:12px;--r-sm:6px;--hdr:56px;--rail:60px;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.28);
+}
+:root[data-theme="light"]{
+  --bg:#f4f6fa;--surface:#fff;--surface-2:#f5f7fb;--surface-3:#eef1f7;
+  --border:#e4e8ef;--border-strong:#d3d9e3;--text:#151a22;--text-2:#59616f;--text-3:#8b93a2;
+  --accent:#3568d4;--accent-soft:rgba(53,104,212,.09);--accent-line:rgba(53,104,212,.35);
+  --crit:#dc3d34;--warn:#c07a12;--ok:#149063;--info:#3568d4;--purple:#7c4ddb;
+  --crit-soft:rgba(220,61,52,.09);--warn-soft:rgba(192,122,18,.11);--ok-soft:rgba(20,144,99,.11);--purple-soft:rgba(124,77,219,.1);
+  --shadow:0 1px 2px rgba(20,40,70,.05),0 10px 30px rgba(20,40,70,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;max-width:100%;overflow-x:hidden}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;overflow:hidden;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+button{font-family:inherit;cursor:pointer;color:inherit;background:none;border:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:5px;border:2px solid transparent;background-clip:padding-box}
+.ic{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ic-sm{width:14px;height:14px}.ic-lg{width:20px;height:20px}
+.eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text-3)}
+
+/* HEADER */
+header{position:fixed;inset:0 0 auto 0;height:var(--hdr);z-index:100;display:flex;align-items:center;gap:var(--s4);padding:0 var(--s4);background:var(--surface);border-bottom:1px solid var(--border);overflow:hidden}
+.brand{display:flex;align-items:center;gap:var(--s3)}
+.logo{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;background:linear-gradient(140deg,var(--accent),#8a6cf0);box-shadow:0 4px 14px rgba(91,140,245,.34)}
+.brand .name{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.brand .name span{color:var(--text-3);font-weight:500}
+.divider-v{width:1px;height:26px;background:var(--border)}
+.unit{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.unit .lbl{font-size:10px;color:var(--text-3)}.unit .val{font-family:var(--mono);font-size:12.5px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:var(--s3);flex-shrink:0}
+.status-pill{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:20px;background:var(--surface-2);border:1px solid var(--border);font-size:12.5px;color:var(--text-2)}
+.led{width:8px;height:8px;border-radius:50%;background:var(--text-3);flex-shrink:0}
+.led.ok{background:var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}.led.warn{background:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)}.led.crit{background:var(--crit);box-shadow:0 0 0 3px var(--crit-soft);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.4}}
+.ghost-btn{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;color:var(--text-2);transition:.15s}
+.ghost-btn:hover{background:var(--surface-2);color:var(--text)}
+
+/* SHELL = rail + workspace */
+.shell{display:flex;height:calc(100vh - var(--hdr));margin-top:var(--hdr)}
+.rail{width:var(--rail);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:var(--s3) 0;gap:2px;overflow-y:auto}
+.rail-item{width:44px;height:44px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--text-3);transition:.14s;position:relative}
+.rail-item span{font-size:8px;font-weight:600;letter-spacing:.02em}
+.rail-item:hover{background:var(--surface-2);color:var(--text-2)}
+.rail-item.on{background:var(--accent-soft);color:var(--accent)}
+.rail-item.on::before{content:"";position:absolute;left:-var(--s3);left:-12px;width:3px;height:22px;border-radius:2px;background:var(--accent)}
+.rail-sep{width:24px;height:1px;background:var(--border);margin:6px 0}
+.workspace{flex:1;min-width:0;position:relative;overflow:hidden}
+.view{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
+.view.on{display:flex}
+
+/* generic view header */
+.vhead{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);padding:var(--s4) var(--s5);border-bottom:1px solid var(--border);flex-shrink:0}
+.vhead h1{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.vhead .vsub{font-size:12.5px;color:var(--text-3);margin-top:2px}
+.vbody{flex:1;min-height:0;overflow-y:auto;padding:var(--s5)}
+
+/* pills / chips / dots */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.pill.crit{background:var(--crit-soft);color:var(--crit)}.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.accent{background:var(--accent-soft);color:var(--accent)}.pill.purple{background:var(--purple-soft);color:var(--purple)}.pill.plain{background:var(--surface-3);color:var(--text-2)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}.dot.crit{background:var(--crit)}.dot.warn{background:var(--warn)}.dot.ok{background:var(--ok)}
+.chip-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);font-size:12px;font-weight:500;color:var(--text-2);transition:.14s}
+.chip-btn:hover{border-color:var(--accent-line);color:var(--text)}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:9px;background:var(--accent);color:#fff;font-size:13px;font-weight:600;transition:.15s}
+.btn-primary:hover{filter:brightness(1.08)}
+
+/* card base */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg)}
+.card-hd{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);padding:12px var(--s4) 0;min-width:0}
+.card-hd .eyebrow{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.card-hd .icard-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+
+/* ═══════ OVERVIEW ═══════ */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:var(--s3);margin-bottom:var(--s5)}
+.kpi{padding:var(--s4);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:var(--s2)}
+.kpi .kh{display:flex;align-items:center;gap:8px;color:var(--text-3);font-size:12px}
+.kpi .kh .ki{width:28px;height:28px;border-radius:8px;display:grid;place-items:center}
+.kpi .kv{font-family:var(--mono);font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.kpi .kf{font-size:11.5px;color:var(--text-3)}
+.kpi .kf b{font-family:var(--mono);color:var(--text-2)}
+.two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:var(--s5);margin-bottom:var(--s5)}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+.sec-title{font-size:13px;font-weight:600;margin-bottom:var(--s3);display:flex;align-items:center;gap:8px}
+.sec-title .pill{margin-left:auto}
+.pillar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:var(--s3)}
+.pillar{padding:var(--s4);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);transition:.15s;cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.pillar:hover{border-color:var(--accent-line);transform:translateY(-2px)}
+.pillar .pi{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);margin-bottom:2px}
+.pillar h4{font-size:13.5px;font-weight:600}
+.pillar p{font-size:11.5px;color:var(--text-3);line-height:1.45}
+.pillar .st{font-size:11px;color:var(--ok);font-weight:600;margin-top:2px}
+.feed-item{display:flex;gap:11px;padding:11px var(--s4);border-radius:var(--r);background:var(--surface);border:1px solid var(--border);margin-bottom:var(--s2);cursor:pointer;transition:.14s}
+.feed-item:hover{border-color:var(--accent-line)}
+.feed-item .fi-ic{margin-top:1px}
+.feed-item .fi-t{font-size:12.5px;color:var(--text);font-weight:500}
+.feed-item .fi-s{font-size:11px;color:var(--text-3);margin-top:1px}
+.feed-item .fi-tag{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--text-2)}
+.eval-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--s3)}
+.eval{padding:var(--s4);border-radius:var(--r);background:var(--surface-2);text-align:center}
+.eval .ev{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--ok)}
+.eval .el{font-size:11px;color:var(--text-3);margin-top:3px}
+.bar{height:6px;border-radius:3px;background:var(--surface-3);overflow:hidden;margin-top:8px}
+.bar>i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+
+/* ═══════ DIAGNOSE (3-col) ═══════ */
+.diag{display:grid;grid-template-columns:minmax(240px,22%) 1fr minmax(300px,25%);height:100%;overflow:hidden}
+.col{display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;background:var(--bg)}
+.col+.col{border-left:1px solid var(--border)}
+.col-head{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);flex-shrink:0;height:46px;padding:0 var(--s4);background:var(--surface)}
+.col-head .title{font-size:13px;font-weight:600}.col-head .title .sub{color:var(--text-3);font-weight:500;margin-left:6px;font-family:var(--mono);font-size:11px}
+.txt-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3);padding:6px 9px;border-radius:7px;transition:.14s}.txt-btn:hover{color:var(--text);background:var(--surface-2)}
+.legend{display:flex;align-items:center;gap:var(--s4);padding:9px var(--s4);flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--border)}
+.lg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-3)}.lg i{width:9px;height:9px;border-radius:3px}
+#cy{flex:1;min-height:0;background:radial-gradient(120% 90% at 50% 0%,var(--surface) 0%,var(--bg) 70%)}
+#cyKG{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 0%,var(--surface) 0%,var(--bg) 70%)}
+#faceplate{flex-shrink:0;background:var(--surface);border-top:1px solid var(--border);min-height:112px;max-height:240px;overflow-y:auto}
+.fp-empty{display:flex;flex-direction:column;align-items:center;gap:9px;color:var(--text-3);font-size:12.5px;padding:26px 20px;text-align:center}
+.fp{padding:var(--s4)}.fp-top{display:flex;align-items:center;gap:var(--s3);margin-bottom:2px}
+.fp-tag{font-family:var(--mono);font-size:19px;font-weight:700}.fp-name{color:var(--text-2);font-size:12.5px;margin-bottom:var(--s3)}
+.fp-props{display:flex;flex-direction:column;gap:2px;margin-bottom:var(--s3)}
+.fp-prop{display:flex;justify-content:space-between;gap:var(--s3);padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}.fp-prop:last-child{border-bottom:none}
+.fp-prop .k{color:var(--text-3)}.fp-prop .v{color:var(--text);font-family:var(--mono)}
+.fp-desc{color:var(--text-3);font-size:11.5px;line-height:1.55;margin-bottom:var(--s3)}
+.fp-actions{display:flex;gap:var(--s2);flex-wrap:wrap}
+.segmented{display:flex;gap:4px;padding:8px var(--s4);background:var(--surface);border-bottom:1px solid var(--border)}
+.seg{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:9px;border-radius:9px;font-size:13px;font-weight:500;color:var(--text-3);transition:.14s}
+.seg:hover{color:var(--text-2);background:var(--surface-2)}.seg.on{background:var(--accent-soft);color:var(--accent)}
+#resp{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:var(--s5)}
+.hero{max-width:460px;margin:36px auto 0;text-align:center}
+.hero .scope{width:52px;height:52px;margin:0 auto var(--s4);border-radius:14px;display:grid;place-items:center;background:var(--surface-2);color:var(--accent)}
+.hero h1{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:var(--s2)}.hero p{font-size:13.5px;color:var(--text-2);line-height:1.6}
+.samples{display:flex;flex-direction:column;gap:var(--s2);margin-top:var(--s6);text-align:left}
+.samp{display:flex;align-items:center;gap:var(--s3);padding:13px var(--s4);border-radius:var(--r);background:var(--surface);border:1px solid var(--border);transition:.15s}
+.samp:hover{border-color:var(--accent-line);transform:translateY(-1px)}.samp .si{color:var(--accent)}.samp .st{font-size:13px;color:var(--text);font-weight:500}.samp .ss{font-size:11.5px;color:var(--text-3);margin-top:1px}.samp .sarrow{margin-left:auto;color:var(--text-3)}
+.live{display:flex;align-items:center;gap:11px;padding:12px var(--s4);border-radius:var(--r);background:var(--surface);border:1px solid var(--border);margin-bottom:var(--s4);font-size:13px;color:var(--text-2)}
+.live .mono{color:var(--accent)}
+.spin{width:15px;height:15px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none}.led.crit{animation:none}}
+.ribbon .rb-body{display:flex;align-items:stretch;gap:var(--s2);padding:var(--s4)}
+.asset{flex:1;min-width:0;border-radius:var(--r);background:var(--surface-2);padding:13px var(--s4);position:relative;overflow:hidden}
+.asset::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}.asset.crit::before{background:var(--crit)}.asset.warn::before{background:var(--warn)}
+.asset .role{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px}.asset.crit .role{color:var(--crit)}.asset.warn .role{color:var(--warn)}
+.asset .a-tag{font-family:var(--mono);font-size:22px;font-weight:700;line-height:1}.asset .a-name{font-size:12px;color:var(--text-2);margin:4px 0 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.asset .a-fault{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text);font-family:var(--mono)}
+.rb-flow{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:104px;padding:0 var(--s2)}
+.rb-flow .fl-label{font-size:10.5px;color:var(--text-2);text-align:center;line-height:1.35}
+.fl-track{position:relative;width:100%;height:2px;border-radius:2px;background-image:linear-gradient(90deg,var(--crit),var(--warn))}
+.fl-track::after{content:"";position:absolute;right:-2px;top:-3.5px;width:0;height:0;border-left:8px solid var(--warn);border-top:4.5px solid transparent;border-bottom:4.5px solid transparent}
+.fl-dashes{position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.55) 0 4px,transparent 4px 10px);animation:dash 1s linear infinite;opacity:.6}
+@keyframes dash{to{background-position:20px 0}}@media(prefers-reduced-motion:reduce){.fl-dashes{animation:none}}
+.rb-flow .fl-corr{font-family:var(--mono);font-size:11px;color:var(--text-2);padding:2px 8px;border-radius:20px;background:var(--surface-3)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:var(--s4);overflow:hidden}
+.metric{padding:14px var(--s3);text-align:center;border-right:1px solid var(--border)}.metric:last-child{border-right:none}
+.metric .mv{font-family:var(--mono);font-size:19px;font-weight:600}.metric .mv.accent{color:var(--accent)}.metric .mv span{font-size:12px;color:var(--text-3)}.metric .ml{font-size:10.5px;color:var(--text-3);margin-top:3px}
+.tele-body{padding:var(--s4)}.tele-read{display:flex;align-items:baseline;gap:8px;margin-bottom:var(--s4)}.tele-read .tv{font-family:var(--mono);font-size:24px;font-weight:700}.tele-read .tu{font-size:12px;color:var(--text-3)}
+.gauge{display:flex;height:34px;border-radius:var(--r-sm);overflow:hidden;position:relative;margin-bottom:6px}.gz{position:relative;height:100%}.gz+.gz{box-shadow:-1px 0 0 var(--bg)}
+.gz .zl{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:700;color:rgba(255,255,255,.9)}
+.gmark{position:absolute;top:-2px;bottom:-2px;width:3px;background:var(--text);border-radius:2px;transform:translateX(-50%);z-index:3;box-shadow:0 0 0 2px var(--surface)}
+.gmark .gv{position:absolute;top:-19px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11.5px;font-weight:700;white-space:nowrap}
+.gzlabels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-3)}
+.trend{position:relative;height:78px;margin-top:var(--s4);padding-top:6px}.trendsvg{width:100%;height:64px;display:block}
+.tlab{position:absolute;font-family:var(--mono);font-size:10px;color:var(--text-3);pointer-events:none;white-space:nowrap}
+.tlab.alarm{right:2px;color:var(--warn);transform:translateY(-115%)}.tlab.bl{left:0;bottom:0}.tlab.br{right:2px;bottom:0;color:var(--text-2)}
+.tdot{position:absolute;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 3px var(--surface)}
+.conf-top{display:flex;align-items:center;gap:var(--s4);padding:var(--s4) var(--s4) var(--s3)}
+.conf-num{font-family:var(--mono);font-size:46px;font-weight:700;letter-spacing:-.04em;line-height:.85}.conf-num span{font-size:20px}
+.conf-cap{font-size:11.5px;color:var(--text-3);margin-top:6px;max-width:36ch;line-height:1.4}
+.conf-bar{display:flex;height:10px;margin:0 var(--s4);border-radius:5px;overflow:hidden;background:var(--surface-3)}.conf-seg{height:100%}.conf-seg+.conf-seg{box-shadow:-2px 0 0 var(--surface)}
+.conf-legend{display:flex;flex-wrap:wrap;gap:10px 16px;padding:var(--s3) var(--s4) var(--s4)}.cl{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text-2)}.cl i{width:9px;height:9px;border-radius:3px}.cl b{color:var(--text);font-family:var(--mono)}
+.md{font-size:13.5px;line-height:1.68;color:var(--text-2)}
+.md h2{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);margin:var(--s6) 0 var(--s2)}.md h2:first-child{margin-top:0}
+.md h3{font-size:14px;font-weight:600;color:var(--text);background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--crit);border-radius:var(--r);padding:12px var(--s4);margin:var(--s4) 0 var(--s2)}
+.md p{margin:var(--s2) 0;color:var(--text-2)}.md strong{color:var(--text);font-weight:600}.md ul,.md ol{padding-left:20px;margin:var(--s2) 0}.md li{margin:5px 0}.md hr{border:none;border-top:1px solid var(--border);margin:var(--s4) 0}
+.md code{font-family:var(--mono);font-size:12px;color:var(--accent);background:var(--accent-soft);padding:2px 6px;border-radius:5px}
+.summary{color:var(--text)!important;background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:var(--r);padding:13px var(--s4)!important;margin:var(--s2) 0 var(--s4)!important;font-size:14px}
+.rec{background:var(--ok-soft);border:1px solid rgba(51,204,149,.3);border-radius:var(--r);padding:11px var(--s4);margin:var(--s3) 0!important;font-size:13px;color:var(--text)}
+.ruled{background:var(--surface);border:1px dashed var(--border-strong);border-radius:var(--r);padding:8px var(--s4)}.actions-h2{color:var(--warn)!important}
+.cite{display:inline-flex;align-items:center;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 6px;cursor:pointer;transition:.12s}.cite:hover{background:var(--accent);color:#fff}.cite.bad{color:var(--crit);background:var(--crit-soft);cursor:help}
+.dock{flex-shrink:0;padding:var(--s3) var(--s4) var(--s4);background:var(--surface);border-top:1px solid var(--border)}
+.dock-field{position:relative;display:flex;align-items:flex-end;gap:var(--s2);background:var(--bg);border:1px solid var(--border-strong);border-radius:var(--r-lg);padding:6px 6px 6px var(--s4);transition:.15s}
+.dock-field:focus-within{border-color:var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea{flex:1;background:none;border:none;color:var(--text);font-family:var(--sans);font-size:13.5px;resize:none;min-height:38px;max-height:120px;outline:none;padding:8px 0}textarea::placeholder{color:var(--text-3)}
+.send{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--accent);color:#fff;transition:.15s;flex-shrink:0}.send:hover{filter:brightness(1.08)}.send.stop{background:var(--crit-soft);color:var(--crit)}
+.dock-hint{font-size:11px;color:var(--text-3);margin-top:8px;padding-left:2px}
+.tabs{display:flex;padding:0 var(--s3);gap:2px;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{padding:13px var(--s3) 11px;font-size:12.5px;font-weight:500;color:var(--text-3);border-bottom:2px solid transparent;white-space:nowrap;transition:.14s}.tab:hover{color:var(--text-2)}.tab.on{color:var(--text);border-bottom-color:var(--accent)}.tab .cnt{margin-left:5px;font-family:var(--mono);font-size:10.5px;color:var(--accent)}
+.tv{flex:1;min-height:0;overflow-y:auto;padding:var(--s3);display:none}.tv.on{display:block}
+.pane-empty{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-3);font-size:12.5px;text-align:center;margin-top:36px;padding:0 var(--s5);line-height:1.5}
+.ev{display:flex;gap:10px;padding:9px 11px;border-radius:var(--r);margin-bottom:5px;background:var(--surface);font-size:12px}.ev .ei{color:var(--text-3);margin-top:1px}.ev.call .ei{color:var(--accent)}.ev.result .ei{color:var(--ok)}.ev.error .ei{color:var(--crit)}.ev .ename{font-family:var(--mono);font-weight:500;color:var(--text)}.ev.result{opacity:.62}.ev-time{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--text-3)}.ev-in{font-family:var(--mono);font-size:10.5px;color:var(--text-3);margin-top:3px;word-break:break-all}
+.icard{padding:12px var(--s4);border-radius:var(--r);background:var(--surface);border:1px solid var(--border);margin-bottom:var(--s2);transition:.14s}.icard.click{cursor:pointer}.icard.click:hover{border-color:var(--accent-line)}
+.icard-h{display:flex;align-items:center;gap:var(--s2);margin-bottom:5px}.icard-tag{font-family:var(--mono);font-size:13px;font-weight:600}.icard-sub{font-size:11.5px;color:var(--text-3)}.icard-line{font-size:12px;color:var(--text-2);margin-top:2px}.icard-line b{color:var(--text);font-weight:600}
+.stat-hero{padding:18px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);text-align:center;margin-bottom:var(--s3)}.stat-hero .sh-big{font-family:var(--mono);font-size:36px;font-weight:700}.stat-hero .sh-lbl{font-size:12px;color:var(--text-3);margin-top:2px}.stat-hero .sh-row{display:flex;justify-content:center;gap:var(--s5);margin-top:var(--s3)}.sh-row .shr{font-size:11px;color:var(--text-3)}.sh-row .shr b{display:block;font-family:var(--mono);font-size:16px;color:var(--text)}
+
+/* ═══════ ASK ═══════ */
+.ask-wrap{max-width:760px;margin:0 auto;width:100%}
+.ask-empty{text-align:center;padding:40px 0}
+.ask-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:var(--s4)}
+.ask-chip{padding:8px 13px;border-radius:20px;background:var(--surface);border:1px solid var(--border);font-size:12.5px;color:var(--text-2);transition:.14s}.ask-chip:hover{border-color:var(--accent-line);color:var(--text)}
+.ask-answer{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s5);margin-bottom:var(--s4)}
+.ask-sources{display:flex;flex-direction:column;gap:var(--s2)}
+.src{display:flex;align-items:center;gap:11px;padding:11px var(--s4);border-radius:var(--r);background:var(--surface);border:1px solid var(--border);cursor:pointer;transition:.14s}.src:hover{border-color:var(--accent-line)}
+.src .si{color:var(--warn)}.src .st{font-size:12.5px;font-weight:500}.src .ss{font-size:11px;color:var(--text-3)}.src .stag{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--accent)}
+
+/* ═══════ INGEST ═══════ */
+.ingest-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5);height:100%}
+@media(max-width:960px){.ingest-grid{grid-template-columns:1fr;height:auto}}
+.ing-col{display:flex;flex-direction:column;gap:var(--s3);min-height:0}
+.ing-samples{display:flex;flex-wrap:wrap;gap:8px}
+.doc-chip{padding:8px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:12px;color:var(--text-2);transition:.14s;display:flex;align-items:center;gap:7px}.doc-chip:hover{border-color:var(--accent-line);color:var(--text)}.doc-chip .dt{font-size:10px;color:var(--text-3)}
+.ing-text{width:100%;min-height:220px;flex:1;background:var(--bg);border:1px solid var(--border-strong);border-radius:var(--r-lg);color:var(--text);font-family:var(--mono);font-size:12px;line-height:1.6;padding:var(--s4);resize:none;outline:none}.ing-text:focus{border-color:var(--accent-line)}
+.ent-group{margin-bottom:var(--s4)}
+.ent-label{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.ent-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ent{padding:5px 10px;border-radius:7px;font-size:12px;font-family:var(--mono);display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2)}
+.ent.linked{background:var(--ok-soft);border-color:rgba(51,204,149,.35);color:var(--ok)}
+.ent.linked::before{content:"●";font-size:8px}
+.ing-summary{display:flex;gap:var(--s4);padding:var(--s4);border-radius:var(--r-lg);background:var(--surface-2);margin-bottom:var(--s4)}
+.ing-summary .is{text-align:center;flex:1}.ing-summary .isv{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--accent)}.ing-summary .isl{font-size:11px;color:var(--text-3)}
+
+/* ═══════ GRAPH (KG) ═══════ */
+.kg-legend{display:flex;gap:var(--s4);padding:9px var(--s5);flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--border)}
+.kgl{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-2)}.kgl i{width:10px;height:10px;border-radius:3px}
+.kg-detail{position:absolute;right:var(--s5);top:76px;width:230px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r-lg);padding:var(--s4);box-shadow:var(--shadow);display:none}
+.kg-detail.on{display:block}
+
+/* ROI */
+.roi-big{background:linear-gradient(140deg,var(--accent-soft),transparent);border:1px solid var(--accent);border-radius:var(--r-lg);padding:24px;text-align:center;margin-bottom:var(--s4)}
+.roi-big .rv{font-family:var(--mono);font-size:46px;font-weight:800;letter-spacing:-.03em;color:var(--accent)}
+.roi-big .rl{font-size:13px;color:var(--ink2);margin-top:4px}
+.roi-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.roi-split .rc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s4);text-align:center}
+.roi-split .rc .v{font-family:var(--mono);font-size:22px;font-weight:700}.roi-split .rc .l{font-size:11.5px;color:var(--ink3);margin-top:3px}
+.roi-note{font-size:11.5px;color:var(--ink3);margin-top:var(--s4);line-height:1.5}
+
+/* Architecture diagram */
+.arch{max-width:820px;margin:0 auto}
+.layer{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s4);margin-bottom:14px;position:relative}
+.layer-lbl{position:absolute;top:-9px;left:16px;background:var(--bg);padding:0 8px;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.layer-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.box{flex:1;min-width:130px;background:var(--surface-2);border:1px solid var(--line2);border-radius:var(--r);padding:12px 14px}
+.box .bt{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
+.box .bd{font-size:11.5px;color:var(--ink3);margin-top:4px;line-height:1.4}
+.box.accent{border-color:var(--accent-line);background:var(--accent-soft)}
+.arch-flow{text-align:center;color:var(--ink3);margin:-6px 0 8px;font-size:16px}
+.arch-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:var(--s5)}
+
+/* Monitor */
+.mon-dev{display:flex;align-items:center;gap:var(--s3);padding:14px var(--s4);border-radius:var(--r);background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--crit);margin-bottom:var(--s2)}
+.mon-dev.warn{border-left-color:var(--warn)}
+.mon-dev .mv{font-family:var(--mono);font-size:20px;font-weight:700}
+.mon-dev .mt{flex:1}.mon-dev .mt .a{font-family:var(--mono);font-weight:700}.mon-dev .mt .b{font-size:11.5px;color:var(--ink3)}
+
+/* command palette */
+#cmdk{position:fixed;inset:0;z-index:250;display:none;align-items:flex-start;justify-content:center;padding-top:12vh;background:rgba(0,0,0,.5)}
+#cmdk.on{display:flex}
+.cmdk-box{width:min(560px,92vw);background:var(--surface);border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.cmdk-box input{width:100%;background:none;border:none;border-bottom:1px solid var(--line);color:var(--ink);font-size:15px;padding:16px;outline:none;font-family:inherit}
+.cmdk-list{max-height:340px;overflow-y:auto;padding:8px}
+.cmdk-item{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;font-size:13.5px;cursor:pointer}
+.cmdk-item.sel,.cmdk-item:hover{background:var(--accent-soft)}
+.cmdk-item .ci{color:var(--ink3)}.cmdk-item.sel .ci{color:var(--accent)}
+.cmdk-item .ck{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--ink3)}
+.role-sel{display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line);font-size:12.5px;color:var(--ink2);cursor:pointer}
+.role-sel:hover{border-color:var(--accent-line)}
+
+/* drawer */
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:199;opacity:0;pointer-events:none;transition:.25s}#ov.on{opacity:1;pointer-events:auto}
+#dw{position:fixed;top:0;right:0;bottom:0;width:min(460px,94vw);z-index:200;background:var(--surface);border-left:1px solid var(--border);box-shadow:-12px 0 40px rgba(0,0,0,.4);transform:translateX(100%);transition:transform .28s cubic-bezier(.22,.7,.24,1);display:flex;flex-direction:column}#dw.on{transform:translateX(0)}
+.dw-h{display:flex;align-items:center;justify-content:space-between;height:var(--hdr);padding:0 var(--s4);border-bottom:1px solid var(--border);flex-shrink:0}.dw-h .id{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent)}
+.dw-b{flex:1;overflow-y:auto;padding:var(--s5)}.dwf{margin-bottom:var(--s4)}.dwf .k{font-size:11px;color:var(--text-3);margin-bottom:4px}.dwf .v{font-size:13.5px}
+.dwc{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:var(--s4);font-size:12.5px;line-height:1.65;white-space:pre-wrap;color:var(--text-2)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface-3);border:1px solid var(--accent-line);color:var(--text);padding:11px 18px;border-radius:10px;font-size:13px;z-index:300;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s}.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* form */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:var(--s4)}.field label{font-size:12px;color:var(--text-2);font-weight:500}
+.field input,.field select,.field textarea{background:var(--bg);border:1px solid var(--border-strong);border-radius:var(--r);color:var(--text);font-family:var(--sans);font-size:13px;padding:10px 12px;outline:none}.field textarea{min-height:90px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent-line)}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .diag{grid-template-columns:1fr}
+  .col{display:none}.col+.col{border-left:none}
+  .diag[data-dview="graph"] .c-graph,.diag[data-dview="rca"] .c-rca,.diag[data-dview="intel"] .c-intel{display:flex}
+  .dtabs{display:flex!important}
+  .unit,.divider-v{display:none}.brand .name span{display:none}
+  .ingest-grid{grid-template-columns:1fr}
+  .rail{width:48px}.rail-item{width:40px;height:40px}.rail-item span{display:none}
+}
+.dtabs{display:none;padding:6px var(--s4);gap:6px;background:var(--surface);border-bottom:1px solid var(--border)}
+.dtab{flex:1;padding:8px;border-radius:8px;font-size:12px;font-weight:600;color:var(--text-3);text-align:center}.dtab.on{background:var(--accent-soft);color:var(--accent)}
+</style>
+</head>
+<body data-theme="dark">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-logo" viewBox="0 0 24 24"><path d="M12 3l7 4v10l-7 4-7-4V7z"/><path d="M12 8v8M8 10l8 4M16 10l-8 4"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M6 11a6 6 0 0012 0M12 17v4"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+<symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14a8 8 0 01-10-10 8 8 0 1010 10z"/></symbol>
+<symbol id="i-report" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 14v2M12 10v6M16 8v8"/></symbol>
+<symbol id="i-fit" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+<symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></symbol>
+<symbol id="i-wrench" viewBox="0 0 24 24"><path d="M15 6a4 4 0 00-5 5l-6 6 2 2 6-6a4 4 0 005-5l-2.5 2.5L16 12l-1.5-1.5L17 8z"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h12v18H6a2 2 0 01-2-2z"/><path d="M8 3v18"/></symbol>
+<symbol id="i-arch" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="5"/><rect x="14" y="3" width="7" height="5"/><rect x="8.5" y="16" width="7" height="5"/><path d="M6.5 8v4h11V8M12 12v4"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 004 0"/></symbol>
+<symbol id="i-mic2" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M6 11a6 6 0 0012 0M12 17v4M9 21h6"/></symbol>
+<symbol id="i-cmd" viewBox="0 0 24 24"><path d="M9 6a3 3 0 10-3 3h12a3 3 0 10-3-3v12a3 3 0 103-3H6a3 3 0 10-3 3"/></symbol>
+</defs></svg>
+
+<header>
+  <div class="brand"><div class="logo"><svg class="ic ic-lg"><use href="#i-logo"/></svg></div>
+    <div class="name">Sanket AI <span>· Industrial Knowledge Intelligence</span></div></div>
+  <div class="divider-v"></div>
+  <div class="unit"><span class="lbl">Unit / P&amp;ID</span><span class="val" id="unitLabel">Cooling-Water Unit 01 · PID-CWS-001 · Rev D</span></div>
+  <div class="hdr-right">
+    <button class="role-sel" id="roleSel" onclick="cycleRole()" title="Switch role"><svg class="ic ic-sm"><use href="#i-shield"/></svg><span id="roleTxt">Engineer</span></button>
+    <button class="ghost-btn" onclick="openCmdk()" aria-label="Command palette (Ctrl+K)" title="Command palette · Ctrl+K"><svg class="ic"><use href="#i-cmd"/></svg></button>
+    <div class="status-pill"><span class="led" id="led"></span><span id="ledTxt">Connecting…</span></div>
+    <button class="ghost-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="ic"><use href="#i-moon"/></svg></button>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="rail" id="rail"></nav>
+  <div class="workspace">
+
+    <!-- ═══ OVERVIEW ═══ -->
+    <section class="view v-overview" data-view="overview">
+      <div class="vhead"><div><h1>Command Centre</h1><div class="vsub" id="ovSub">Plant-wide knowledge intelligence</div></div>
+        <button class="btn-primary" onclick="setApp('diagnose')"><svg class="ic ic-sm"><use href="#i-target"/></svg>Run a diagnosis</button></div>
+      <div class="vbody" id="ovBody"><div class="pane-empty">Loading command centre…</div></div>
+    </section>
+
+    <!-- ═══ DIAGNOSE (3-col) ═══ -->
+    <section class="view v-diagnose" data-view="diagnose">
+      <div class="dtabs">
+        <button class="dtab" onclick="dview('graph')">Schematic</button>
+        <button class="dtab on" onclick="dview('rca')">Diagnose</button>
+        <button class="dtab" onclick="dview('intel')">Intel</button>
+      </div>
+      <div class="diag" id="diag" data-dview="rca">
+        <section class="col c-graph">
+          <div class="col-head"><div class="title">Plant Schematic <span class="sub">PID-CWS-001</span></div>
+            <button class="txt-btn" onclick="resetGraph()"><svg class="ic ic-sm"><use href="#i-fit"/></svg>Fit</button></div>
+          <div class="legend"><div class="lg"><i style="background:var(--text-3)"></i>Normal</div><div class="lg"><i style="background:var(--warn)"></i>Warning</div><div class="lg"><i style="background:var(--crit)"></i>Alarm</div><div class="lg" style="margin-left:auto"><i style="background:var(--accent)"></i>Selected</div></div>
+          <div id="cy"></div>
+          <div id="faceplate"><div class="fp-empty"><svg class="ic ic-lg"><use href="#i-share"/></svg><span>Select a tag to open its faceplate</span></div></div>
+        </section>
+        <section class="col c-rca">
+          <div class="segmented">
+            <button class="seg on" data-mode="diagnose" onclick="setMode('diagnose')"><svg class="ic ic-sm"><use href="#i-target"/></svg>Diagnose</button>
+            <button class="seg" data-mode="ask" onclick="setMode('ask')"><svg class="ic ic-sm"><use href="#i-search"/></svg>Ask here</button>
+          </div>
+          <div id="resp"><div class="hero" id="hero">
+            <div class="scope"><svg class="ic ic-lg"><use href="#i-target"/></svg></div>
+            <h1>Root-Cause Diagnostic Console</h1>
+            <p>Describe a failure. Sanket traverses the P&amp;ID, pulls CMMS evidence, correlates ISO&nbsp;14224 co-failure data, and returns a cited causal chain with a computed confidence.</p>
+            <div class="samples" id="samples"></div>
+          </div></div>
+          <div class="dock"><div class="dock-field"><textarea id="q" rows="1" placeholder="Describe the equipment failure…"></textarea>
+            <button class="send" id="send" onclick="run()" aria-label="Analyze"><svg class="ic"><use href="#i-arrow"/></svg></button></div>
+            <div class="dock-hint">Press <b>Ctrl+Enter</b> to run · try a sample above</div></div>
+        </section>
+        <section class="col c-intel">
+          <div class="tabs">
+            <button class="tab on" data-tab="trace" onclick="setTab('trace')">Trace</button>
+            <button class="tab" data-tab="sources" onclick="setTab('sources')">Sources</button>
+            <button class="tab" data-tab="comply" onclick="setTab('comply')">Compliance</button>
+            <button class="tab" data-tab="warn" onclick="setTab('warn')">Alerts</button>
+          </div>
+          <div class="tv on" id="tv-trace"><div class="pane-empty"><svg class="ic ic-lg"><use href="#i-activity"/></svg><span>The reasoning trace streams here during analysis.</span></div></div>
+          <div class="tv" id="tv-sources"><div class="pane-empty"><svg class="ic ic-lg"><use href="#i-file"/></svg><span>Cited source documents appear here after a diagnosis.</span></div></div>
+          <div class="tv" id="tv-comply"><div class="pane-empty">Loading…</div></div>
+          <div class="tv" id="tv-warn"><div class="pane-empty">Loading…</div></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ═══ ASK ═══ -->
+    <section class="view v-ask" data-view="ask">
+      <div class="vhead"><div><h1>Expert Knowledge Copilot</h1><div class="vsub">Cited answers across every document — records, manuals, standards, tribal knowledge</div></div></div>
+      <div class="vbody"><div class="ask-wrap" id="askWrap">
+        <div class="ask-empty">
+          <div class="scope" style="width:52px;height:52px;margin:0 auto 16px;border-radius:14px;display:grid;place-items:center;background:var(--surface-2);color:var(--accent)"><svg class="ic ic-lg"><use href="#i-search"/></svg></div>
+          <h1 style="font-size:19px;font-weight:700">Ask anything about the plant</h1>
+          <p style="color:var(--text-2);font-size:13.5px;max-width:44ch;margin:6px auto 0">Every answer is grounded in real documents with source citations and a computed confidence.</p>
+          <div class="ask-chips" id="askChips"></div>
+        </div>
+      </div></div>
+      <div class="dock"><div class="dock-field" style="max-width:760px;margin:0 auto"><textarea id="askQ" rows="1" placeholder="e.g. What is the condition and history of P-101A? · What does OISD-STD-130 require?"></textarea>
+        <button class="send" id="voiceBtn" onclick="startVoice()" aria-label="Voice input" title="Voice input" style="background:var(--surface-3);color:var(--ink2)"><svg class="ic"><use href="#i-mic2"/></svg></button>
+        <button class="send" onclick="askRun()" aria-label="Ask"><svg class="ic"><use href="#i-arrow"/></svg></button></div></div>
+    </section>
+
+    <!-- ═══ INGEST ═══ -->
+    <section class="view v-ingest" data-view="ingest">
+      <div class="vhead"><div><h1>Document Ingestion &amp; Entity Extraction</h1><div class="vsub">Drop any document — PDF, email, scanned form, manual — entities are extracted and linked into the knowledge graph</div></div></div>
+      <div class="vbody"><div class="ingest-grid">
+        <div class="ing-col">
+          <div class="eyebrow">Sample documents (click to load)</div>
+          <div class="ing-samples" id="ingSamples"></div>
+          <div class="eyebrow" style="margin-top:8px">Document text</div>
+          <textarea class="ing-text" id="ingText" placeholder="Paste any industrial document here — inspection report, email, OEM manual, regulatory form, incident record…"></textarea>
+          <div style="display:flex;gap:8px"><button class="btn-primary" onclick="ingestPreview()"><svg class="ic ic-sm"><use href="#i-cpu"/></svg>Extract entities</button>
+            <button class="chip-btn" onclick="ingestCommit()"><svg class="ic ic-sm"><use href="#i-check"/></svg>Add to graph</button></div>
+        </div>
+        <div class="ing-col">
+          <div class="eyebrow">Extracted entities</div>
+          <div id="ingResult" style="flex:1;overflow-y:auto"><div class="pane-empty"><svg class="ic ic-lg"><use href="#i-cpu"/></svg><span>Load or paste a document, then Extract.</span></div></div>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- ═══ KNOWLEDGE GRAPH ═══ -->
+    <section class="view v-graph" data-view="graph">
+      <div class="vhead"><div><h1>Knowledge Graph</h1><div class="vsub">Unified entity graph — Equipment · Documents · Failure modes · People · Regulations</div></div>
+        <div style="display:flex;gap:8px;align-items:center"><input id="kgTag" class="field" style="margin:0;padding:8px 12px;background:var(--bg);border:1px solid var(--border-strong);border-radius:8px;color:var(--text);font-family:var(--mono);width:110px" value="P-101A"><button class="chip-btn" onclick="loadKG(document.getElementById('kgTag').value.toUpperCase())">Load</button></div></div>
+      <div class="kg-legend">
+        <div class="kgl"><i style="background:var(--accent)"></i>Equipment</div>
+        <div class="kgl"><i style="background:var(--warn)"></i>Document</div>
+        <div class="kgl"><i style="background:var(--crit)"></i>Failure mode</div>
+        <div class="kgl"><i style="background:var(--ok)"></i>Person</div>
+        <div class="kgl"><i style="background:var(--purple)"></i>Regulation</div>
+        <div class="kgl"><i style="background:#8a94a3"></i>Area (ISA-95)</div>
+      </div>
+      <div style="flex:1;position:relative;min-height:0"><div id="cyKG"></div><div class="kg-detail" id="kgDetail"></div></div>
+    </section>
+
+    <!-- ═══ COMPLIANCE ═══ -->
+    <section class="view v-comply" data-view="comply">
+      <div class="vhead"><div><h1>Quality &amp; Regulatory Compliance</h1><div class="vsub">OISD · Factory Act · PESO · ISO · API · CPCB — mapped to every asset's evidence</div></div></div>
+      <div class="vbody" id="complyBody"><div class="pane-empty">Loading compliance…</div></div>
+    </section>
+
+    <!-- ═══ CAPTURE ═══ -->
+    <section class="view v-capture" data-view="capture">
+      <div class="vhead"><div><h1>Knowledge-Cliff Capture</h1><div class="vsub">Turn a retiring expert's undocumented know-how into a permanent, queryable graph node</div></div></div>
+      <div class="vbody"><div class="two-col">
+        <div class="card" style="padding:var(--s5)">
+          <div class="field"><label>Equipment tag</label><input id="capTag" placeholder="e.g. P-101A" value="P-101A"></div>
+          <div class="field"><label>Title</label><input id="capTitle" placeholder="e.g. Impeller reclearance after cavitation"></div>
+          <div class="field"><label>Expert</label><input id="capAuthor" placeholder="e.g. Retiring Sr. Engineer"></div>
+          <div class="field"><label>Knowledge / know-how</label><textarea id="capContent" placeholder="Describe the undocumented operational knowledge…"></textarea></div>
+          <button class="btn-primary" onclick="captureSubmit()"><svg class="ic ic-sm"><use href="#i-mic"/></svg>Capture to graph</button>
+        </div>
+        <div><div class="sec-title">Captured knowledge <span class="pill purple" id="capCount">0</span></div><div id="capList"><div class="pane-empty">Captured expert knowledge appears here — instantly queryable in Ask &amp; Diagnose.</div></div></div>
+      </div></div>
+    </section>
+
+    <!-- ═══ MONITOR ═══ -->
+    <section class="view v-monitor" data-view="monitor">
+      <div class="vhead"><div><h1>Live Monitor</h1><div class="vsub">Quality deviations (SPC) · predicted time-to-failure · overdue inspections</div></div></div>
+      <div class="vbody" id="monBody"><div class="pane-empty">Loading live monitor…</div></div>
+    </section>
+
+    <!-- ═══ ROI ═══ -->
+    <section class="view v-roi" data-view="roi">
+      <div class="vhead"><div><h1>Business Impact</h1><div class="vsub">What knowledge intelligence is worth to this plant, per year</div></div></div>
+      <div class="vbody"><div class="two-col">
+        <div class="card" style="padding:var(--s5)">
+          <div class="sec-title">Assumptions</div>
+          <div class="field"><label>Technicians / engineers</label><input type="number" id="r_tech" value="40"></div>
+          <div class="field"><label>Hours/week each spends searching for info <span style="color:var(--text-3)">(McKinsey: 35%)</span></label><input type="number" id="r_hours" value="14"></div>
+          <div class="field"><label>Time reduction with Sanket (%)</label><input type="number" id="r_red" value="60"></div>
+          <div class="field"><label>Loaded labour rate (₹/hour)</label><input type="number" id="r_rate" value="900"></div>
+          <div class="field"><label>Unplanned downtime events / year</label><input type="number" id="r_dt" value="20"></div>
+          <div class="field"><label>Cost per downtime event (₹)</label><input type="number" id="r_dtc" value="1500000"></div>
+          <div class="field"><label>Downtime reduction (%) <span style="color:var(--text-3)">(BIS: 18–22% from fragmentation)</span></label><input type="number" id="r_dtr" value="20"></div>
+          <button class="btn-primary" onclick="loadROI()"><svg class="ic ic-sm"><use href="#i-trend"/></svg>Recalculate</button>
+        </div>
+        <div id="roiOut"><div class="pane-empty">Enter assumptions and recalculate.</div></div>
+      </div></div>
+    </section>
+
+    <!-- ═══ ARCHITECTURE ═══ -->
+    <section class="view v-architecture" data-view="architecture">
+      <div class="vhead"><div><h1>System Architecture</h1><div class="vsub">Neo4j-optional data layer · deterministic + LLM engines · runs with zero external services</div></div></div>
+      <div class="vbody" id="archBody"></div>
+    </section>
+
+  </div>
+</div>
+
+<div id="ov" onclick="closeDrawer()"></div>
+<aside id="dw"><div class="dw-h"><span class="id" id="dwId">—</span><button class="ghost-btn" onclick="closeDrawer()" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div><div class="dw-b" id="dwB"></div></aside>
+<div class="toast" id="toast"></div>
+<div id="cmdk" onclick="if(event.target.id==='cmdk')closeCmdk()"><div class="cmdk-box"><input id="cmdkIn" placeholder="Jump to a view, or type a diagnosis query…" autocomplete="off"><div class="cmdk-list" id="cmdkList"></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.29.2/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);const CE=window.CSS;
+function icon(id,cls){return `<svg class="ic ${cls||''}"><use href="#${id}"/></svg>`;}
+const NODECOL={HIGH:'#f0564d',MEDIUM:'#f2a63b',LOW:'#33cc95'};
+const KGCOL={Equipment:'#5b8cf5',Document:'#f2a63b',FailureMode:'#f0564d',Person:'#33cc95',Regulation:'#a879f0',Area:'#8a94a3'};
+const SHAPE={CENTRIFUGAL_PUMP:'ellipse',CONTROL_VALVE:'diamond',HEAT_EXCHANGER:'round-rectangle',STORAGE_VESSEL:'barrel',CENTRIFUGAL_COMPRESSOR:'hexagon',ELECTRIC_MOTOR:'octagon',STRAINER:'vee',FLOW_TRANSMITTER:'triangle',PRESSURE_TRANSMITTER:'triangle',VIBRATION_TRANSMITTER:'triangle'};
+const SAMPLES=[{q:'P-101A centrifugal pump showing 47Hz vibration spike. Find root cause.',t:'Pump vibration',s:'flagship · upstream cavitation'},{q:'K-501 compressor high vibration, what is the cause?',t:'Compressor vibration',s:'2nd circuit · lube-oil filter blockage'},{q:'HE-301 heat exchanger outlet temperature rising, why?',t:'Exchanger fouling',s:'fouling → reduced heat transfer'}];
+const ASKS=['What is the condition and history of P-101A?','What does OISD-STD-130 require?','What causes centrifugal pump vibration?','Show me everything about V-201 cavitation'];
+const RAIL=[['overview','i-grid','Home'],['diagnose','i-target','Diagnose'],['ask','i-search','Ask'],['ingest','i-upload','Ingest'],['graph','i-share','Graph'],['monitor','i-trend','Monitor'],['comply','i-shield','Comply'],['roi','i-report','ROI'],['capture','i-mic','Capture'],['architecture','i-arch','Arch']];
+
+/* THEME */
+function toggleTheme(){const r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);$('themeBtn').innerHTML=icon(n==='dark'?'i-moon':'i-sun');try{localStorage.setItem('sk-th',n)}catch{}}
+(function(){try{const t=localStorage.getItem('sk-th');if(t){document.documentElement.setAttribute('data-theme',t);}}catch{}})();
+document.documentElement.setAttribute('data-theme',document.documentElement.getAttribute('data-theme')||'dark');
+
+/* RAIL + VIEW SWITCH */
+$('rail').innerHTML=RAIL.map(([v,i,l])=>`<button class="rail-item" data-view="${v}" onclick="setApp('${v}')">${icon(i,'ic-lg')}<span>${l}</span></button>`).join('');
+let app='overview';const loaded={};
+function setApp(v){app=v;document.querySelectorAll('.rail-item').forEach(b=>b.classList.toggle('on',b.dataset.view===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.dataset.view===v));
+  if(v==='overview'&&!loaded.ov){loadOverview();}
+  if(v==='ask'&&!loaded.ask){$('askChips').innerHTML=ASKS.map(a=>`<button class="ask-chip" onclick='askPick(${JSON.stringify(a)})'>${a}</button>`).join('');loaded.ask=1;}
+  if(v==='ingest'&&!loaded.ing){loadSamples();}
+  if(v==='graph'&&!loaded.kg){loadKG('P-101A');}
+  if(v==='comply'&&!loaded.comp){loadComplyView();}
+  if(v==='capture'){loadCaptureList();}
+  if(v==='monitor'){loadMonitor();}
+  if(v==='roi'&&!loaded.roi){loadROI();}
+  if(v==='architecture'&&!loaded.arch){loadArchitecture();}
+  if(v==='diagnose'&&cy)setTimeout(()=>cy.resize(),50);
+  if(v==='graph'&&cyKG)setTimeout(()=>cyKG.resize(),50);
+}
+
+/* ═══ MONITOR ═══ */
+async function loadMonitor(){const v=$('monBody');v.innerHTML='<div class="pane-empty">Loading…</div>';
+  try{const[dev,ovd]=await Promise.all([fetch('/intel/deviations').then(r=>r.json()),fetch('/intel/overdue').then(r=>r.json())]);
+    let ttf='';for(const t of ['P-101A','K-501']){try{const tl=await fetch('/intel/telemetry/'+t).then(r=>r.ok?r.json():null);if(tl){const pts=tl.trend;const last=pts[pts.length-1],prev=pts[pts.length-2];const rate=(last.value-prev.value);if(rate>0&&tl.trip){const wk=Math.max(1,Math.round((tl.trip-last.value)/rate));ttf+=`<div class="mon-dev warn"><div class="mv" style="color:var(--warn)">~${wk}w</div><div class="mt"><div class="a">${t} → trip in ~${wk} week(s)</div><div class="b">${tl.parameter} ${last.value}/${tl.trip} ${tl.unit} at current degradation rate</div></div></div>`;}}}catch{}}
+    v.innerHTML=`<div class="kpi-grid"><div class="kpi"><div class="kh">${icon('i-alert','ic-sm')}Quality deviations (SPC)</div><div class="kv" style="color:${dev.count?'var(--crit)':'var(--ok)'}">${dev.count}</div><div class="kf">assets breaching alarm limits</div></div>
+      <div class="kpi"><div class="kh">${icon('i-bell','ic-sm')}Overdue inspections</div><div class="kv" style="color:var(--warn)">${ovd.count}</div><div class="kf">as of ${ovd.as_of}</div></div></div>
+      <div class="sec-title">Live SPC deviations</div>${dev.deviations.map(x=>`<div class="mon-dev ${x.severity==='CRITICAL'?'':'warn'}" onclick="diagnose('${x.tag}')" style="cursor:pointer"><div class="mv" style="color:var(--${x.severity==='CRITICAL'?'crit':'warn'})">${x.value}</div><div class="mt"><div class="a">${x.tag} · ${x.parameter}</div><div class="b">${x.value} ${x.unit} vs alarm ${x.alarm} — ${x.exceed_pct}% over · ${x.severity}</div></div>${icon('i-arrow','ic-sm')}</div>`).join('')||'<div class="pane-empty">No active deviations.</div>'}
+      <div class="sec-title" style="margin-top:var(--s5)">Predicted time-to-failure</div>${ttf||'<div class="pane-empty">No assets trending toward trip.</div>'}`;
+  }catch{v.innerHTML='<div class="pane-empty">Failed to load monitor.</div>';}}
+
+/* ═══ ROI ═══ */
+async function loadROI(){loaded.roi=1;const g=id=>$(id).value;const qs=`technicians=${g('r_tech')}&search_hours_per_week=${g('r_hours')}&time_reduction_pct=${g('r_red')}&loaded_rate_inr=${g('r_rate')}&downtime_events_per_year=${g('r_dt')}&downtime_cost_inr=${g('r_dtc')}&downtime_reduction_pct=${g('r_dtr')}`;
+  try{const d=await fetch('/intel/roi?'+qs).then(r=>r.json());const fmt=n=>'₹'+n.toLocaleString('en-IN');
+    $('roiOut').innerHTML=`<div class="roi-big"><div class="rv">₹${d.total_annual_value_cr} Cr</div><div class="rl">estimated annual value to the plant</div></div>
+      <div class="roi-split"><div class="rc"><div class="v" style="color:var(--ok)">${fmt(d.labour_savings_inr)}</div><div class="l">labour saved · ${d.hours_saved_per_year.toLocaleString('en-IN')} hrs/yr</div></div>
+      <div class="rc"><div class="v" style="color:var(--accent)">${fmt(d.downtime_avoided_inr)}</div><div class="l">unplanned downtime avoided</div></div></div>
+      <div class="roi-note">Grounded in the brief's own figures: professionals spend <b>35%</b> of time searching (McKinsey), and knowledge fragmentation drives <b>18–22%</b> of unplanned downtime (BIS Research). Adjust the assumptions on the left to model your plant.</div>`;
+  }catch{$('roiOut').innerHTML='<div class="pane-empty">Failed to compute ROI.</div>';}}
+
+/* ═══ ARCHITECTURE ═══ */
+async function loadArchitecture(){loaded.arch=1;let health={};try{health=await fetch('/health').then(r=>r.json());}catch{}
+  const b=(t,d,cls)=>`<div class="box ${cls||''}"><div class="bt">${t}</div><div class="bd">${d}</div></div>`;
+  $('archBody').innerHTML=`<div class="arch">
+    <div class="layer"><span class="layer-lbl">Presentation</span><div class="layer-row">${b('Command-centre UI','Single-file, 10 views, responsive, dark/light')}${b('Live P&amp;ID + Knowledge Graph','Cytoscape · alarm colouring · causal path')}${b('SSE streaming','Token + tool-trace + infographics')}</div></div>
+    <div class="arch-flow">▼ HTTP / Server-Sent Events</div>
+    <div class="layer"><span class="layer-lbl">API — FastAPI</span><div class="layer-row">${b('/rca','Diagnose (stream + query)')}${b('/graph','P&amp;ID + knowledge graph')}${b('/intel','Ingest · Ask · Compliance · Lessons · ROI · Eval')}</div></div>
+    <div class="arch-flow">▼</div>
+    <div class="layer accent"><span class="layer-lbl">Store facade — the key abstraction</span><div class="layer-row">${b('MemStore','In-memory graph from seed JSON — zero dependencies','accent')}${b('⇄ auto-select ⇄','Neo4j if reachable, else in-memory')}${b('Neo4jStore','Production knowledge graph (Cypher)','accent')}</div></div>
+    <div class="arch-flow">▼</div>
+    <div class="layer"><span class="layer-lbl">Reasoning &amp; intelligence engines</span><div class="layer-row">${b('RCA engine','Deterministic + LLM · computed confidence · citation verify')}${b('Ingestion','Entity extraction → knowledge graph')}${b('Copilot','Cited Q&amp;A retrieval + synthesis')}</div>
+      <div class="layer-row">${b('Compliance','Clause → asset → evidence gaps')}${b('Lessons + ML','Co-failure warnings · AI4I classifier')}${b('LangGraph agent','Groq llama-3.3-70b when a key is set')}</div></div>
+    <div class="arch-badges"><span class="pill ok">Runs with 0 external services</span><span class="pill accent">${health.rca_mode==='llm-agent'?'LLM agent active':'Deterministic mode'}</span><span class="pill plain">${(health.store&&health.store.equipment)||0} assets · ${(health.store&&health.store.documents)||0} docs</span><span class="pill purple">28 tests green</span></div>
+  </div>`;}
+
+/* HEALTH */
+async function health(){try{const d=await fetch('/health').then(r=>r.json());const s=d.store||{};$('led').className='led '+(d.status==='ok'?'ok':'warn');$('ledTxt').textContent=(d.status==='ok'?'Operational':'Degraded')+' · '+(s.equipment||0)+' assets';}catch{$('led').className='led crit';$('ledTxt').textContent='Backend offline';}}
+health();
+
+/* ═══ OVERVIEW ═══ */
+async function loadOverview(){loaded.ov=1;
+  try{const[o,e]=await Promise.all([fetch('/intel/overview').then(r=>r.json()),fetch('/intel/evaluation').then(r=>r.json())]);
+    $('ovSub').textContent=`Plant-wide knowledge intelligence · ${o.as_of} · ${o.assets.total} assets · ${o.documents.total} documents`;
+    const kpi=(ic,col,val,head,foot)=>`<div class="kpi"><div class="kh"><span class="ki" style="background:${col}22;color:${col}">${icon(ic,'ic-sm')}</span>${head}</div><div class="kv">${val}</div><div class="kf">${foot}</div></div>`;
+    const pillars=[['diagnose','i-target','Maintenance & RCA','Graph-topology root-cause with cited causal chains','Live'],['ask','i-search','Expert Copilot','Cited Q&A across the whole corpus','Live'],['ingest','i-upload','Document Ingestion','Entity extraction into the knowledge graph',`${e.entity_extraction.sample_documents} formats`],['comply','i-shield','Quality & Compliance','OISD / Factory Act / PESO gap detection',`${Math.round(o.compliance.rate*100)}%`],['graph','i-share','Failure Intelligence','Systemic patterns & proactive warnings',`${o.alerts.active_warnings} alerts`]];
+    $('ovBody').innerHTML=`
+      <div class="kpi-grid">
+        ${kpi('i-share','#5b8cf5',o.assets.total,'Assets monitored',`<b>${o.assets.high}</b> high · <b>${o.assets.medium}</b> med · <b>${o.assets.low}</b> low criticality`)}
+        ${kpi('i-file','#f2a63b',o.documents.total,'Documents in graph',Object.entries(o.documents.by_type).slice(0,3).map(([k,v])=>`<b>${v}</b> ${k.replace(/_/g,' ').toLowerCase()}`).join(' · '))}
+        ${kpi('i-shield',o.compliance.rate<0.7?'#f0564d':'#33cc95',Math.round(o.compliance.rate*100)+'%',' Plant compliance',`<b>${o.compliance.gaps}</b> gaps · <b style="color:var(--crit)">${o.compliance.high_gaps}</b> high severity`)}
+        ${kpi('i-alert','#f0564d',o.alerts.active_warnings,'Proactive alerts',`<b>${o.alerts.overdue_inspections}</b> overdue inspections`)}
+        ${kpi('i-book','#a879f0',o.knowledge.failure_modes,'Failure modes',`<b>${o.knowledge.clauses}</b> standards · <b>${o.knowledge.personnel}</b> personnel · <b>${o.knowledge.captures}</b> captures`)}
+      </div>
+      <div class="sec-title">Validated evaluation metrics <span class="pill ok">measured, not claimed</span></div>
+      <div class="eval-grid" style="margin-bottom:var(--s5)">
+        <div class="eval"><div class="ev">${Math.round(e.benchmark.accuracy*100)}%</div><div class="el">Benchmark accuracy (${e.benchmark.questions} Q)</div></div>
+        <div class="eval"><div class="ev">${Math.round(e.benchmark.citation_faithfulness*100)}%</div><div class="el">Citation faithfulness</div></div>
+        <div class="eval"><div class="ev">${Math.round(e.entity_extraction.linkage_accuracy*100)}%</div><div class="el">Entity-link accuracy</div></div>
+        <div class="eval"><div class="ev">${Math.round(e.kg_completeness.documents_linked*100)}%</div><div class="el">KG linkage completeness</div></div>
+        <div class="eval"><div class="ev">${e.benchmark.mean_answer_ms}ms</div><div class="el">Time-to-answer <span style="color:var(--text-3)">vs ~4h manual</span></div></div>
+      </div>
+      <div class="two-col">
+        <div><div class="sec-title">Proactive failure alerts</div><div id="ovFeed">${(o.top_warnings||[]).map(w=>`<div class="feed-item" onclick="diagnose('${w.tag}')"><span class="fi-ic">${icon('i-alert','ic-sm')}</span><div><div class="fi-t">${w.tag} · ${w.current_failure} → likely ${w.projected_failure}</div><div class="fi-s">${w.note||''}</div></div><span class="fi-tag">${Math.round(w.correlation*100)}%</span></div>`).join('')||'<div class="pane-empty">No active alerts</div>'}</div></div>
+        <div><div class="sec-title">Top recurring failure modes</div>${(o.top_failure_modes||[]).map(p=>`<div class="feed-item"><span class="fi-ic">${icon('i-activity','ic-sm')}</span><div><div class="fi-t">${p.failure_mode}</div><div class="fi-s">${p.assets_affected} assets · ${p.high_severity} high-severity</div></div><span class="fi-tag">×${p.occurrences}</span></div>`).join('')}</div>
+      </div>
+      <div class="sec-title">Five capabilities, one brain</div>
+      <div class="pillar-grid">${pillars.map(([v,i,h,p,st])=>`<div class="pillar" onclick="setApp('${v}')"><div class="pi">${icon(i,'ic-sm')}</div><h4>${h}</h4><p>${p}</p><div class="st">${st}</div></div>`).join('')}</div>`;
+  }catch(e){$('ovBody').innerHTML='<div class="pane-empty">Failed to load overview.</div>';console.error(e);}}
+
+/* ═══ DIAGNOSE (graph + console + intel) ═══ */
+let cy=null;
+function dview(v){$('diag').setAttribute('data-dview',v);document.querySelectorAll('.dtab').forEach((b,i)=>b.classList.toggle('on',['graph','rca','intel'][i]===v));if(cy)setTimeout(()=>cy.resize(),40);}
+function buildCy(els){if(cy)cy.destroy();const lab=getComputedStyle(document.documentElement).getPropertyValue('--surface').trim()||'#111419';cy=cytoscape({container:$('cy'),elements:els,style:[
+  {selector:'node',style:{'background-color':'#3a4048','border-color':e=>NODECOL[e.data('criticality')]||'#646b78','border-width':2.5,'shape':e=>SHAPE[e.data('type')]||'ellipse','width':44,'height':44,'label':'data(label)','color':'#d6dbe4','font-size':11,'font-weight':700,'font-family':'SF Mono, monospace','text-valign':'bottom','text-margin-y':6,'text-background-color':lab,'text-background-opacity':.92,'text-background-shape':'roundrectangle','text-background-padding':3,'overlay-opacity':0}},
+  {selector:'node.dim',style:{'opacity':.12}},{selector:'node.nbr',style:{'border-color':'#5b8cf5','border-width':3}},{selector:'node.focus',style:{'background-color':'#5b8cf5','border-color':'#a8c2fb','border-width':3.5,'width':52,'height':52}},{selector:'node.alarm',style:{'background-color':'#f0564d','border-color':'#ffb0ab','border-width':3.5,'width':50,'height':50}},{selector:'node.warn',style:{'background-color':'#f2a63b','border-color':'#ffd79a','border-width':3.5,'width':50,'height':50}},
+  {selector:'edge',style:{'width':1.8,'line-color':'#3a414d','target-arrow-color':'#3a414d','target-arrow-shape':'triangle','curve-style':'bezier','arrow-scale':1,'overlay-opacity':0}},
+  {selector:'edge.dim',style:{'opacity':.05}},{selector:'edge.path',style:{'line-color':'#f0564d','target-arrow-color':'#f0564d','width':3,'opacity':.95}}],
+  layout:{name:'cose',padding:44,nodeRepulsion:26000,idealEdgeLength:135,nodeOverlap:24,gravity:.25,componentSpacing:120,animate:false,randomize:false},
+  minZoom:.3,maxZoom:2.5});
+  cy.on('tap','node',e=>selectNode(e.target.data()));cy.on('tap',e=>{if(e.target===cy)clearHi();});cy.ready(()=>cy.fit(undefined,40));}
+async function loadGraph(){try{const {nodes,edges}=await fetch('/graph/equipment').then(r=>r.json());buildCy([...nodes,...edges]);}catch(e){console.error(e);}}
+async function selectNode(d){renderFaceplate(d);try{const {nodes}=await fetch('/graph/neighborhood/'+encodeURIComponent(d.id)+'?depth=2').then(r=>r.json());const ids=new Set(nodes.map(n=>n.data.id));cy.nodes().forEach(n=>{const id=n.id();if(id===d.id)n.removeClass('dim nbr alarm warn').addClass('focus');else if(ids.has(id))n.removeClass('dim focus').addClass('nbr');else n.removeClass('nbr focus').addClass('dim');});cy.edges().forEach(e=>{const ok=ids.has(e.source().id())&&ids.has(e.target().id());ok?e.removeClass('dim'):e.addClass('dim');});}catch{}}
+async function renderFaceplate(d){const c=(d.criticality||'').toUpperCase();let tele='';try{const t=await fetch('/intel/telemetry/'+encodeURIComponent(d.id)).then(r=>r.ok?r.json():null);if(t)tele=`<div class="fp-prop"><span class="k">${t.parameter}</span><span class="v" style="color:var(--${zc(t)==='crit'?'crit':zc(t)==='warn'?'warn':'text'})">${t.current} ${t.unit}</span></div>`;}catch{}
+  $('faceplate').innerHTML=`<div class="fp"><div class="fp-top"><span class="fp-tag">${d.id}</span><span class="pill ${c==='HIGH'?'crit':c==='MEDIUM'?'warn':'ok'}">${c||'—'}</span></div><div class="fp-name">${d.name||''}</div><div class="fp-props"><div class="fp-prop"><span class="k">Type</span><span class="v">${(d.type||'').replace(/_/g,' ')}</span></div><div class="fp-prop"><span class="k">Area</span><span class="v">${d.area||'—'}</span></div>${tele}</div>${d.description?`<div class="fp-desc">${d.description}</div>`:''}<div class="fp-actions"><button class="chip-btn" onclick="diagnose('${d.id}')">${icon('i-target','ic-sm')}Diagnose</button><button class="chip-btn" onclick="report('${d.id}')">${icon('i-report','ic-sm')}Report</button><button class="chip-btn" onclick="setApp('graph');loadKG('${d.id}')">${icon('i-share','ic-sm')}Graph</button></div></div>`;}
+function zc(t){const v=t.current;const z=(t.zones||[]).find(z=>v>=z.min&&v<z.max)||(t.zones||[]).slice(-1)[0];return z?z.status:'normal';}
+function clearHi(){cy&&cy.elements().removeClass('dim nbr focus alarm warn path');$('faceplate').innerHTML='<div class="fp-empty">'+icon('i-share','ic-lg')+'<span>Select a tag to open its faceplate</span></div>';}
+function resetGraph(){cy&&(cy.elements().removeClass('dim nbr focus'),cy.fit(undefined,28));}
+function markAlarm(c){if(!cy||!c)return;const to=cy.$('#'+CE.escape(c.to_tag)),fr=cy.$('#'+CE.escape(c.from_tag));if(to.length)to.addClass('alarm');if(fr.length&&!c.self)fr.addClass('warn');cy.edges().forEach(e=>{const s=e.source().id(),t=e.target().id();if((s===c.from_tag&&t===c.to_tag)||(s===c.to_tag&&t===c.from_tag))e.addClass('path');});}
+loadGraph();
+
+let mode='diagnose';
+function setMode(m){mode=m;document.querySelectorAll('.seg').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));$('q').placeholder={diagnose:'Describe the equipment failure…',ask:'Ask anything — routes to the Copilot…'}[m];}
+function diagnose(tag){setApp('diagnose');setMode('diagnose');dview('rca');$('q').value=tag+' — investigate the current abnormal condition and find the root cause.';run();}
+$('samples').innerHTML=SAMPLES.map(e=>`<button class="samp" onclick='pick(${JSON.stringify(e.q)})'>${icon('i-target','si')}<span><div class="st">${e.t}</div><div class="ss">${e.s}</div></span>${icon('i-arrow','sarrow ic-sm')}</button>`).join('');
+function pick(q){$('q').value=q;run();}
+$('q').addEventListener('input',e=>{e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,120)+'px';});
+
+let es=null,buf='',thinking=false,t0=0,meta=null;
+function run(){const q=$('q').value.trim();if(!q)return;if(mode==='ask'){setApp('ask');$('askQ').value=q;askRun();return;}
+  if(es){es.close();es=null;}buf='';thinking=true;t0=Date.now();meta=null;$('resp').innerHTML='<div id="_hero"></div><div id="_md" class="md"></div>';clearTrace();resetTab('sources');live('Initialising');$('send').classList.add('stop');$('send').innerHTML=icon('i-x');$('send').setAttribute('onclick','stopStream()');dview('rca');
+  es=new EventSource('/rca/stream?query='+encodeURIComponent(q));
+  es.onmessage=ev=>{if(ev.data==='[DONE]'){es.close();es=null;finish();return;}let e;try{e=JSON.parse(ev.data)}catch{return;}
+    if(e.type==='token'){if(thinking){thinking=false;clearLive();}buf+=e.content;renderMd(buf,true);}
+    else if(e.type==='tool_call'){if(thinking){thinking=false;clearLive();}addEv('call',e.tool,e.input);flashFrom(e.tool,e.input);live(pretty(e.tool),e.input);}
+    else if(e.type==='tool_result'){addEv('result',e.tool);}else if(e.type==='meta'){meta=e;}
+    else if(e.type==='error'){$('_md').innerHTML='<div class="rec" style="background:var(--crit-soft);border-color:var(--crit);color:var(--crit)">'+e.message+'</div>';finish();}};
+  es.onerror=()=>{es.close();es=null;if(!buf)$('resp').innerHTML='<div class="hero"><p style="color:var(--crit)">Backend unreachable.</p></div>';finish();};}
+function pretty(t){return (t||'').replace(/_/g,' ');}
+function stopStream(){if(es){es.close();es=null;}finish();}
+function finish(){thinking=false;clearLive();$('send').classList.remove('stop');$('send').innerHTML=icon('i-arrow');$('send').setAttribute('onclick','run()');if(buf)renderMd(buf,false);if(meta)renderMeta(meta);}
+function live(t,inp){let el=$('_live');if(!el){el=document.createElement('div');el.id='_live';el.className='live';$('resp').insertBefore(el,$('resp').firstChild);}const tag=inp&&(inp.match(/['"]tag['"]\s*:\s*['"]([^'"]+)['"]/)||[])[1];el.innerHTML='<div class="spin"></div><span>'+t+(tag?' <span class="mono">'+tag+'</span>':'…')+'</span>';}
+function clearLive(){const el=$('_live');if(el)el.remove();}
+function renderMd(text,streaming){let d=$('_md');if(!d)return;let html=marked.parse(text)+(streaming?' <span style="opacity:.35">▌</span>':'');html=html.replace(/\[((?:INS|WO|MNT|ALM|RPT|ERR|TRIBAL|DOC|CSB)[-A-Za-z0-9]*-[A-Za-z0-9]+)\]/g,(m,id)=>`<span class="cite" data-doc="${id}">${id}</span>`);html=html.replace(/([A-Za-z0-9-]+) \[unverified\]/g,'<span class="cite bad" title="Unverifiable">$1 ⚠</span>');d.innerHTML=html;if(!streaming){enhance(d);d.querySelectorAll('.cite[data-doc]').forEach(c=>c.onclick=()=>openDoc(c.dataset.doc));}$('resp').scrollTop=0;}
+function enhance(d){d.querySelectorAll('h2').forEach(h=>{const t=h.textContent;if(/Summary/.test(t)){const n=h.nextElementSibling;if(n&&n.tagName==='P')n.classList.add('summary');}if(/Immediate Actions/.test(t))h.classList.add('actions-h2');if(/Ruled Out/.test(t)){const n=h.nextElementSibling;if(n&&n.tagName==='UL')n.classList.add('ruled');}});d.querySelectorAll('strong').forEach(s=>{if(/Recommended Action/.test(s.textContent)){const p=s.closest('p');if(p)p.classList.add('rec');}});}
+async function renderMeta(m){const hero=$('_hero');if(!hero)return;let html='';if(m.causal)html+=ribbonHTML(m.causal);html+=metricsHTML(m.metrics||{});hero.innerHTML=html;
+  if(m.focus_tag){try{const t=await fetch('/intel/telemetry/'+encodeURIComponent(m.focus_tag)).then(r=>r.ok?r.json():null);if(t){const w=document.createElement('div');w.innerHTML=teleHTML(t);hero.appendChild(w.firstElementChild);}}catch{}}
+  if(m.confidence!=null){const w=document.createElement('div');w.innerHTML=confHTML(m.confidence,m.confidence_breakdown||[]);hero.appendChild(w.firstElementChild);requestAnimationFrame(()=>hero.querySelectorAll('.conf-seg').forEach(s=>s.style.width=s.dataset.w));}
+  const cites=(m.citations&&m.citations.valid)||[];if(cites.length){$('tv-sources').innerHTML='';cites.forEach(id=>{const c=document.createElement('div');c.className='icard click';c.innerHTML=`<div class="icard-h">${icon('i-file','ic-sm')}<span class="icard-tag">${id}</span><span class="pill ok" style="margin-left:auto">cited</span></div><div class="icard-line">Open source document</div>`;c.onclick=()=>openDoc(id);$('tv-sources').appendChild(c);});document.querySelector('[data-tab="sources"]').innerHTML='Sources<span class="cnt">'+cites.length+'</span>';}
+  if(m.causal)markAlarm(m.causal);}
+function ribbonHTML(c){if(c.self)return `<div class="card ribbon"><div class="card-hd"><span class="eyebrow">${icon('i-alert','ic-sm')}Local condition</span></div><div class="rb-body"><div class="asset warn"><div class="role">Affected asset</div><div class="a-tag">${c.to_tag}</div><div class="a-name">${c.to_name}</div><div class="a-fault"><span class="dot warn"></span>${c.from_mechanism}</div></div></div></div>`;
+  return `<div class="card ribbon"><div class="card-hd"><span class="eyebrow">${icon('i-activity','ic-sm')}Causal chain</span><span class="icard-sub">${c.hops} hop upstream · P&amp;ID traversal</span></div><div class="rb-body"><div class="asset crit"><div class="role">Root cause</div><div class="a-tag">${c.from_tag}</div><div class="a-name">${c.from_name}</div><div class="a-fault"><span class="dot crit"></span>${c.from_mechanism} · ${c.from_mode}</div></div><div class="rb-flow"><div class="fl-label">${c.from_mechanism.toLowerCase()}<br>transmitted</div><div class="fl-track"><div class="fl-dashes"></div></div><div class="fl-corr">r ${(c.correlation||0).toFixed(2)}</div></div><div class="asset warn"><div class="role">Symptom</div><div class="a-tag">${c.to_tag}</div><div class="a-name">${c.to_name}</div><div class="a-fault"><span class="dot warn"></span>observed fault</div></div></div></div>`;}
+function metricsHTML(mt){const el=(v,u,l,hl)=>`<div class="metric"><div class="mv ${hl?'accent':''}">${v}${u?'<span>'+u+'</span>':''}</div><div class="ml">${l}</div></div>`;return '<div class="metrics">'+el(((Date.now()-t0)/1000).toFixed(1),'s','Answer time',1)+el('~4','h','Manual')+el(mt.nodes_traversed??'—','','Nodes')+el(mt.documents_examined??'—','','Docs')+el(mt.citations??0,'','Cited')+el(Math.round((mt.citation_faithfulness??1)*100),'%','Faithful')+'</div>';}
+function teleHTML(t){const zmax=t.zones[t.zones.length-1].max;const zcol={ok:'var(--ok)',normal:'var(--info)',warn:'var(--warn)',crit:'var(--crit)'};const zones=t.zones.map(z=>`<div class="gz" style="width:${((z.max-z.min)/zmax*100).toFixed(2)}%;background:${zcol[z.status]||'var(--text-3)'};opacity:.86"><span class="zl">${z.zone}</span></div>`).join('');const pos=Math.min(t.current/zmax*100,99).toFixed(1);const cs=zc(t);const cc=cs==='crit'?'var(--crit)':cs==='warn'?'var(--warn)':'var(--text)';
+  return `<div class="card tele"><div class="card-hd"><span class="eyebrow">${icon('i-activity','ic-sm')}Condition monitoring</span><span class="icard-sub mono">${t.sensor} · ${t.standard}</span></div><div class="tele-body"><div class="tele-read"><span class="tv" style="color:${cc}">${t.current}</span><span class="tu">${t.unit} · ${t.parameter}</span></div><div class="gauge">${zones}<div class="gmark" style="left:${pos}%"><span class="gv" style="color:${cc}">${t.current}</span></div></div><div class="gzlabels">${t.zones.map(z=>'<span>'+z.label+'</span>').join('')}</div><div class="trend">${trendBlock(t)}</div></div></div>`;}
+function trendBlock(t){const pts=t.trend;if(!pts||pts.length<2)return'';const vals=pts.map(p=>p.value);const ymax=Math.max(...vals,t.alarm)*1.08,ymin=Math.min(...vals,t.baseline)*.9;const xf=i=>i/(pts.length-1)*100,yf=v=>(1-(v-ymin)/(ymax-ymin))*100;const line=pts.map((p,i)=>(i?'L':'M')+xf(i).toFixed(1)+' '+yf(p.value).toFixed(1)).join(' ');const area=line+' L100 100 L0 100 Z';const last=pts[pts.length-1];const col=last.value>=t.alarm?'var(--crit)':'var(--accent)';const aY=yf(t.alarm).toFixed(1);const g='tg'+Math.random().toString(36).slice(2,7);
+  return `<div class="trend"><svg class="trendsvg" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><linearGradient id="${g}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".18"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><line x1="0" x2="100" y1="${aY}" y2="${aY}" stroke="var(--warn)" stroke-width="1" stroke-dasharray="3 2" vector-effect="non-scaling-stroke"/><path d="${area}" fill="url(#${g})"/><path d="${line}" fill="none" stroke="${col}" stroke-width="1.8" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg><span class="tlab alarm" style="top:${aY}%">alarm ${t.alarm}</span><span class="tlab bl">${pts[0].date.slice(0,7)}</span><span class="tlab br">${last.date.slice(0,7)} · ${last.value} ${t.unit.split(' ')[0]}</span><span class="tdot" style="left:100%;top:${yf(last.value).toFixed(1)}%;background:${col}"></span></div>`;}
+function confHTML(pct,bd){const lvl=pct>=75?'High':pct>=55?'Medium':'Low';const pc=pct>=75?'ok':pct>=55?'warn':'crit';const col=`var(--${pc})`;const total=bd.reduce((a,b)=>a+b.points,0)||pct;const alpha=[1,.82,.66,.54,.44,.36];const seg=bd.map((b,i)=>`<div class="conf-seg" data-w="${(b.points/total*100).toFixed(1)}%" style="width:0;background:var(--accent);opacity:${alpha[i%alpha.length]}"></div>`).join('');const leg=bd.map((b,i)=>`<span class="cl"><i style="background:var(--accent);opacity:${alpha[i%alpha.length]}"></i>${b.factor} <b>+${b.points}</b></span>`).join('');
+  return `<div class="card conf"><div class="conf-top"><div class="conf-num" style="color:${col}">${pct}<span>%</span></div><div><span class="pill ${pc}">${lvl} confidence</span><div class="conf-cap">Computed from evidence — corroborating documents, recency, severity and ISO-14224 correlation. Not asserted by the model.</div></div></div><div class="conf-bar">${seg}</div><div class="conf-legend">${leg}</div></div>`;}
+function flashFrom(tool,inp){if(!inp)return;try{const o=JSON.parse(inp.replace(/'/g,'"'));if(o.tag)return pulse(o.tag);if(o.tags)return o.tags.forEach(pulse);}catch{}const m=inp.match(/['"]tag['"]\s*:\s*['"]([^'"]+)['"]/);if(m)pulse(m[1]);}
+function pulse(tag){if(!cy)return;const n=cy.$('#'+CE.escape(tag));if(!n.length)return;n.addClass('nbr');setTimeout(()=>n.removeClass('nbr'),1000);}
+function clearTrace(){$('tv-trace').innerHTML='';}function resetTab(t){$('tv-'+t).innerHTML='';}
+function addEv(type,tool,detail){const log=$('tv-trace');const e=log.querySelector('.pane-empty');if(e)e.remove();const t=new Date(),ts=[t.getHours(),t.getMinutes(),t.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');const ic={call:'i-arrow',result:'i-activity',error:'i-alert'}[type];const inp=detail&&detail.length>66?detail.slice(0,66)+'…':detail;const el=document.createElement('div');el.className='ev '+type;el.innerHTML=`<span class="ei">${icon(ic,'ic-sm')}</span><div style="flex:1;min-width:0"><div style="display:flex;align-items:center"><span class="ename">${pretty(tool)||'system'}</span><span class="ev-time">${ts}</span></div>${inp?'<div class="ev-in">'+inp+'</div>':''}</div>`;log.appendChild(el);log.scrollTop=log.scrollHeight;}
+function setTab(t){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));document.querySelectorAll('.tv').forEach(v=>v.classList.remove('on'));$('tv-'+t).classList.add('on');if(t==='comply'&&!$('tv-comply').dataset.l)loadComplyMini();if(t==='warn'&&!$('tv-warn').dataset.l)loadWarnMini();}
+async function loadComplyMini(){const v=$('tv-comply');v.dataset.l='1';v.innerHTML='<div class="pane-empty">Loading…</div>';try{const d=await fetch('/intel/compliance/plant').then(r=>r.json());const rate=Math.round(d.compliance_rate*100);v.innerHTML=`<div class="stat-hero"><div class="sh-big" style="color:${rate<70?'var(--crit)':'var(--ok)'}">${rate}%</div><div class="sh-lbl">plant compliance · ${d.as_of}</div><div class="sh-row"><span class="shr"><b>${d.gaps}</b>gaps</span><span class="shr"><b style="color:var(--crit)">${d.high_severity_gaps}</b>high</span><span class="shr"><b>${d.assets_audited}</b>assets</span></div></div>`+d.assets.filter(a=>a.gaps>0).map(a=>`<div class="icard click" onclick="setApp('comply');loadComplyAsset('${a.tag}')"><div class="icard-h"><span class="icard-tag">${a.tag}</span><span class="icard-sub">${a.type.replace(/_/g,' ')}</span><span class="pill crit" style="margin-left:auto">${a.gaps} gap</span></div></div>`).join('');}catch{v.innerHTML='<div class="pane-empty">Failed.</div>';}}
+async function loadWarnMini(){const v=$('tv-warn');v.dataset.l='1';v.innerHTML='<div class="pane-empty">Loading…</div>';try{const d=await fetch('/intel/lessons/warnings').then(r=>r.json());v.innerHTML=(d.warnings||[]).map(w=>`<div class="icard click" onclick="diagnose('${w.tag}')"><div class="icard-h"><span class="icard-tag">${w.tag}</span><span class="pill ${w.current_severity==='HIGH'?'crit':'warn'}" style="margin-left:auto">${Math.round(w.correlation*100)}%</span></div><div class="icard-line"><b>${w.current_failure}</b> → likely <b>${w.projected_failure}</b></div><div class="icard-line" style="color:var(--text-3)">${w.note||''}</div></div>`).join('')||'<div class="pane-empty">None.</div>';}catch{v.innerHTML='<div class="pane-empty">Failed.</div>';}}
+
+/* ═══ ASK ═══ */
+function askPick(q){$('askQ').value=q;askRun();}
+async function askRun(){const q=$('askQ').value.trim();if(!q)return;setApp('ask');$('askWrap').innerHTML='<div class="live"><div class="spin"></div><span>Searching the knowledge graph…</span></div>';
+  try{const d=await fetch('/intel/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q})}).then(r=>r.json());
+    let html=`<div style="font-size:15px;font-weight:600;margin-bottom:var(--s4)">${q}</div>`;
+    html+=`<div class="ask-answer"><div class="md" id="askMd"></div></div>`;
+    if(d.confidence!=null){const pc=d.confidence>=75?'ok':d.confidence>=55?'warn':'crit';html+=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:var(--s4)"><span class="pill ${pc}">${d.confidence}% confidence</span><span style="font-size:11.5px;color:var(--text-3)">computed from ${d.sources.length} sources</span></div>`;}
+    if(d.sources&&d.sources.length){html+='<div class="sec-title">Sources</div><div class="ask-sources">'+d.sources.map(s=>`<div class="src" onclick="openDoc('${s.id}')">${icon('i-file','si')}<div><div class="st">${s.title||s.id}</div><div class="ss">${(s.type||'').replace(/_/g,' ')} · ${s.date||''}</div></div><span class="stag">${s.id}</span></div>`).join('')+'</div>';}
+    $('askWrap').innerHTML=html;let mdhtml=marked.parse(d.answer||'');mdhtml=mdhtml.replace(/\[((?:INS|WO|MNT|ALM|RPT|ERR|TRIBAL|DOC|CSB)[-A-Za-z0-9]*-[A-Za-z0-9]+)\]/g,(m,id)=>`<span class="cite" data-doc="${id}">${id}</span>`);$('askMd').innerHTML=mdhtml;$('askMd').querySelectorAll('.cite[data-doc]').forEach(c=>c.onclick=()=>openDoc(c.dataset.doc));
+  }catch(e){$('askWrap').innerHTML='<div class="pane-empty">Failed to get an answer.</div>';}}
+$('askQ').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();askRun();}});
+
+/* ═══ INGEST ═══ */
+let SAMPLE_DOCS=[];
+async function loadSamples(){loaded.ing=1;try{const d=await fetch('/intel/samples').then(r=>r.json());SAMPLE_DOCS=d.documents;$('ingSamples').innerHTML=SAMPLE_DOCS.map((s,i)=>`<button class="doc-chip" onclick="loadSampleDoc(${i})">${icon('i-file','ic-sm')}<span>${s.doc_type}<span class="dt"> · ${s.format}</span></span></button>`).join('');}catch{}}
+function loadSampleDoc(i){$('ingText').value=SAMPLE_DOCS[i].text;ingestPreview();}
+async function ingestPreview(){const text=$('ingText').value.trim();if(!text){toast('Paste or load a document first');return;}
+  try{const d=await fetch('/intel/ingest/preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})}).then(r=>r.json());const e=d.entities;
+    const grp=(label,ic,items,render)=>items&&items.length?`<div class="ent-group"><div class="ent-label">${icon(ic,'ic-sm')}${label} <span class="pill plain" style="margin-left:4px">${items.length}</span></div><div class="ent-chips">${items.map(render).join('')}</div></div>`:'';
+    $('ingResult').innerHTML=`<div class="ing-summary"><div class="is"><div class="isv">${d.entity_count}</div><div class="isl">entities</div></div><div class="is"><div class="isv">${d.linked_to_graph}/${d.linkable}</div><div class="isl">linked to graph</div></div><div class="is"><div class="isv">${Math.round(d.linkage_rate*100)}%</div><div class="isl">linkage</div></div></div>`+
+      grp('Equipment','i-share',e.equipment,x=>`<span class="ent ${x.linked?'linked':''}">${x.value}</span>`)+
+      grp('Regulatory refs','i-shield',e.regulatory,x=>`<span class="ent ${x.linked?'linked':''}">${x.resolves_to||x.value}</span>`)+
+      grp('Personnel','i-mic',e.personnel,x=>`<span class="ent ${x.linked?'linked':''}">${x.value}</span>`)+
+      grp('Process parameters','i-activity',e.parameters,x=>`<span class="ent">${x}</span>`)+
+      grp('Dates','i-book',e.dates,x=>`<span class="ent">${x}</span>`)+
+      grp('Failure modes','i-alert',e.failure_modes,x=>`<span class="ent linked">${x.value} → ${x.resolves_to}</span>`)+
+      `<div style="font-size:11.5px;color:var(--text-3);margin-top:8px">● linked = resolves to an existing knowledge-graph node (cross-document discovery)</div>`;
+  }catch{$('ingResult').innerHTML='<div class="pane-empty">Extraction failed.</div>';}}
+async function ingestCommit(){const text=$('ingText').value.trim();if(!text){toast('Nothing to add');return;}
+  try{const d=await fetch('/intel/ingest/commit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,title:'Ingested document',doc_type:'Ingested'})}).then(r=>r.json());toast(`Added ${d.document.id} · linked to ${d.linked_equipment.join(', ')||'no equipment'}`);}catch{toast('Commit failed');}}
+
+/* ═══ KNOWLEDGE GRAPH ═══ */
+let cyKG=null;
+async function loadKG(tag){loaded.kg=1;try{const d=await fetch('/graph/knowledge/'+encodeURIComponent(tag)).then(r=>{if(!r.ok)throw 0;return r.json();});
+  if(cyKG)cyKG.destroy();const lab=getComputedStyle(document.documentElement).getPropertyValue('--surface').trim()||'#111419';
+  cyKG=cytoscape({container:$('cyKG'),elements:[...d.nodes,...d.edges],style:[
+    {selector:'node',style:{'background-color':e=>KGCOL[e.data('category')]||'#646b78','background-opacity':.92,'border-width':e=>e.data('focus')?4:2,'border-color':e=>e.data('focus')?'#fff':lab,'shape':e=>e.data('category')==='Equipment'?'ellipse':e.data('category')==='Document'?'round-rectangle':e.data('category')==='Regulation'?'diamond':e.data('category')==='Person'?'ellipse':'round-rectangle','width':e=>e.data('focus')?60:38,'height':e=>e.data('focus')?60:38,'label':'data(label)','color':'#e2e6ec','font-size':e=>e.data('focus')?12:10,'font-weight':600,'font-family':'SF Mono, monospace','text-valign':'bottom','text-margin-y':6,'text-background-color':lab,'text-background-opacity':.9,'text-background-shape':'roundrectangle','text-background-padding':3,'text-max-width':90,'text-wrap':'ellipsis','overlay-opacity':0}},
+    {selector:'edge',style:{'width':1.4,'line-color':'#39414d','curve-style':'bezier','target-arrow-shape':'triangle','target-arrow-color':'#39414d','arrow-scale':.8,'overlay-opacity':0}},
+    {selector:'edge.hl',style:{'line-color':'#5b8cf5','target-arrow-color':'#5b8cf5','width':2.2}},
+    {selector:'node.faded',style:{'opacity':.25}},{selector:'edge.faded',style:{'opacity':.08}}],
+    layout:{name:'concentric',padding:50,minNodeSpacing:64,concentric:n=>n.data('focus')?10:({Equipment:4,Document:3,FailureMode:2,Regulation:2,Person:1}[n.data('category')]||1),levelWidth:()=>1,animate:false},
+    minZoom:.3,maxZoom:2.5});
+  cyKG.on('tap','node',e=>{const n=e.target.data();const nd=e.target;cyKG.elements().addClass('faded');nd.removeClass('faded');nd.connectedEdges().removeClass('faded').addClass('hl').connectedNodes().removeClass('faded');
+    $('kgDetail').className='kg-detail on';$('kgDetail').innerHTML=`<div class="eyebrow" style="color:${KGCOL[n.category]}">${n.category}</div><div class="mono" style="font-size:16px;font-weight:700;margin:5px 0">${n.label}</div>${n.desc?`<div style="font-size:12px;color:var(--text-2);line-height:1.5">${n.desc}</div>`:''}${n.criticality?`<span class="pill ${n.criticality==='HIGH'?'crit':n.criticality==='MEDIUM'?'warn':'ok'}" style="margin-top:8px">${n.criticality} criticality</span>`:''}<div style="font-size:11px;color:var(--text-3);margin-top:8px">${nd.connectedEdges().length} connection(s)</div>${n.category==='Document'?`<button class="chip-btn" style="margin-top:10px" onclick="openDoc('${n.id}')">Open document</button>`:''}${n.category==='Equipment'&&!n.focus?`<button class="chip-btn" style="margin-top:10px" onclick="document.getElementById('kgTag').value='${n.label}';loadKG('${n.label}')">Center on this</button>`:''}`;});
+  cyKG.on('tap',e=>{if(e.target===cyKG){$('kgDetail').className='kg-detail';cyKG.elements().removeClass('faded hl');}});
+  setTimeout(()=>{cyKG.resize();cyKG.fit(undefined,44);},80);
+}catch(e){toast('No knowledge graph for '+tag);}}
+
+/* ═══ COMPLIANCE VIEW ═══ */
+async function loadComplyView(){loaded.comp=1;const v=$('complyBody');v.innerHTML='<div class="pane-empty">Loading…</div>';try{const d=await fetch('/intel/compliance/plant').then(r=>r.json());const rate=Math.round(d.compliance_rate*100);
+  v.innerHTML=`<div class="kpi-grid"><div class="kpi"><div class="kh">${icon('i-shield','ic-sm')}Plant compliance</div><div class="kv" style="color:${rate<70?'var(--crit)':'var(--ok)'}">${rate}%</div><div class="kf">as of ${d.as_of}</div></div><div class="kpi"><div class="kh">${icon('i-alert','ic-sm')}Open gaps</div><div class="kv">${d.gaps}</div><div class="kf"><b style="color:var(--crit)">${d.high_severity_gaps}</b> high severity</div></div><div class="kpi"><div class="kh">${icon('i-check','ic-sm')}Checks passed</div><div class="kv">${d.compliant}</div><div class="kf">of ${d.checks} across ${d.assets_audited} assets</div></div></div>
+    <div class="sec-title">Assets with gaps</div><div class="pillar-grid">${d.assets.filter(a=>a.gaps>0).map(a=>`<div class="pillar" onclick="loadComplyAsset('${a.tag}')"><div style="display:flex;align-items:center;gap:8px"><span class="mono" style="font-size:15px;font-weight:700">${a.tag}</span><span class="pill crit" style="margin-left:auto">${a.gaps} gap</span></div><p>${a.type.replace(/_/g,' ')} · ${a.compliant}/${a.clauses_checked} met</p></div>`).join('')}</div>`;
+}catch{v.innerHTML='<div class="pane-empty">Failed.</div>';}}
+async function loadComplyAsset(tag){setApp('comply');const v=$('complyBody');v.innerHTML='<div class="pane-empty">Loading…</div>';try{const d=await fetch('/intel/compliance/'+encodeURIComponent(tag)).then(r=>r.json());
+  v.innerHTML=`<button class="chip-btn" onclick="loadComplyView()" style="margin-bottom:var(--s4)">← All assets</button><div class="stat-hero"><div class="sh-big" style="color:${d.gaps?'var(--crit)':'var(--ok)'}">${d.compliant}/${d.clauses_checked}</div><div class="sh-lbl">${tag} — ${d.name} · ${d.gaps} gap(s)</div></div>`+
+    d.results.map(r=>`<div class="icard"><div class="icard-h"><span class="icard-tag" style="font-size:12.5px">${r.standard}</span><span class="pill ${r.status==='GAP'?(r.severity==='HIGH'?'crit':'warn'):'ok'}" style="margin-left:auto">${r.status==='GAP'?'gap · '+r.severity:'compliant'}</span></div><div class="icard-line" style="color:var(--text-2)">${r.requirement}</div>${r.evidence?`<div class="icard-line">evidence <b>${r.evidence}</b> · ${r.evidence_date}</div>`:`<div class="icard-line" style="color:var(--crit)">no acceptable evidence within ${r.interval_days} days</div>`}</div>`).join('');
+}catch{v.innerHTML='<div class="pane-empty">Failed.</div>';}}
+
+/* ═══ CAPTURE ═══ */
+async function captureSubmit(){const b={equipment_tag:$('capTag').value.trim().toUpperCase(),title:$('capTitle').value.trim(),content:$('capContent').value.trim(),author:$('capAuthor').value.trim()};if(!b.equipment_tag||!b.content){toast('Tag and knowledge are required');return;}
+  try{const d=await fetch('/intel/knowledge/capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(r=>{if(!r.ok)throw 0;return r.json();});toast('Captured '+d.id+' — now queryable');$('capTitle').value='';$('capContent').value='';loadCaptureList();}catch{toast('Capture failed — check the tag exists');}}
+async function loadCaptureList(){try{const d=await fetch('/intel/knowledge/list').then(r=>r.json());const caps=d.captures||[];$('capCount').textContent=caps.length;$('capList').innerHTML=caps.length?caps.map(c=>`<div class="icard"><div class="icard-h">${icon('i-mic','ic-sm')}<span class="icard-tag">${c.equipment_tag}</span><span class="icard-sub" style="margin-left:auto">${c.author||'—'}</span></div><div class="icard-line"><b>${c.title||'Captured knowledge'}</b></div><div class="icard-line" style="color:var(--text-3)">${(c.content||'').slice(0,140)}</div></div>`).join(''):'<div class="pane-empty">No captures yet.</div>';}catch{}}
+
+/* DRAWER + TOAST */
+async function openDoc(id){$('dwId').textContent=id;$('dwB').innerHTML='<div class="pane-empty">Loading…</div>';$('dw').classList.add('on');$('ov').classList.add('on');try{const d=await fetch('/intel/documents/'+encodeURIComponent(id)).then(r=>{if(!r.ok)throw 0;return r.json();});const f=(k,val)=>val?`<div class="dwf"><div class="k">${k}</div><div class="v">${val}</div></div>`:'';$('dwB').innerHTML=f('Type',(d.type||'').replace(/_/g,' ')+(d.subtype?' · '+d.subtype:''))+f('Equipment',(d.linked_tags||[d.tag]).filter(Boolean).join(', '))+f('Date',d.date)+f('Severity',d.severity)+f('Recorded by',d.inspector||d.technician||d.author)+`<div class="dwf"><div class="k">Content</div><div class="dwc">${d.content||d.title||'—'}</div></div>`;}catch{$('dwB').innerHTML='<div class="pane-empty">Document not found.</div>';}}
+async function report(tag){$('dwId').textContent=tag+' · report';$('dwB').innerHTML='<div class="pane-empty">Generating…</div>';$('dw').classList.add('on');$('ov').classList.add('on');try{const d=await fetch('/intel/report/'+encodeURIComponent(tag)).then(r=>r.json());$('dwB').innerHTML='<div class="md">'+marked.parse(d.markdown)+'</div>';}catch{$('dwB').innerHTML='<div class="pane-empty">Failed.</div>';}}
+function closeDrawer(){$('dw').classList.remove('on');$('ov').classList.remove('on');}
+let toastT;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600);}
+window.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
+
+/* ROLE (lightweight RBAC demo) */
+let role='Engineer';const ROLES=['Operator','Engineer','Auditor'];
+function cycleRole(){role=ROLES[(ROLES.indexOf(role)+1)%ROLES.length];$('roleTxt').textContent=role;
+  const dest={Operator:'diagnose',Engineer:'overview',Auditor:'comply'}[role];toast('Viewing as '+role+' — '+dest);setApp(dest);}
+
+/* COMMAND PALETTE */
+let cmdkItems=[],cmdkSel=0;
+function openCmdk(){$('cmdk').classList.add('on');$('cmdkIn').value='';renderCmdk('');setTimeout(()=>$('cmdkIn').focus(),30);}
+function closeCmdk(){$('cmdk').classList.remove('on');}
+function renderCmdk(q){const base=RAIL.map(([v,i,l])=>({label:'Go to '+l,ic:i,act:()=>setApp(v),k:v}));
+  const actions=[{label:'Run demo diagnosis — P-101A 47Hz vibration',ic:'i-target',act:()=>{setApp('diagnose');$('q').value=SAMPLES[0].q;run();}},{label:'Ask the Copilot',ic:'i-search',act:()=>setApp('ask')},{label:'Business impact (ROI)',ic:'i-report',act:()=>setApp('roi')}];
+  let all=[...actions,...base];
+  if(q){const ql=q.toLowerCase();const f=all.filter(c=>c.label.toLowerCase().includes(ql));all=f;
+    if(q.length>4)all.unshift({label:'Diagnose: “'+q+'”',ic:'i-target',act:()=>{setApp('diagnose');$('q').value=q;run();}});}
+  cmdkItems=all;cmdkSel=0;
+  $('cmdkList').innerHTML=all.map((c,i)=>`<div class="cmdk-item ${i===0?'sel':''}" onclick="cmdkRun(${i})">${icon(c.ic,'ci ic-sm')}<span>${c.label}</span>${c.k?'<span class="ck">'+c.k+'</span>':''}</div>`).join('')||'<div class="pane-empty" style="margin:20px">No matches</div>';}
+function cmdkRun(i){const c=cmdkItems[i];if(c){closeCmdk();c.act();}}
+$('cmdkIn').addEventListener('input',e=>renderCmdk(e.target.value.trim()));
+$('cmdkIn').addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){e.preventDefault();cmdkSel=Math.min(cmdkSel+1,cmdkItems.length-1);}
+  else if(e.key==='ArrowUp'){e.preventDefault();cmdkSel=Math.max(cmdkSel-1,0);}
+  else if(e.key==='Enter'){e.preventDefault();cmdkRun(cmdkSel);return;}
+  else return;
+  document.querySelectorAll('.cmdk-item').forEach((el,i)=>el.classList.toggle('sel',i===cmdkSel));});
+
+/* VOICE (field-tech, hands-busy) */
+function startVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Voice not supported in this browser');return;}
+  const r=new SR();r.lang='en-IN';r.interimResults=false;$('voiceBtn').style.color='var(--crit)';
+  r.onresult=e=>{$('askQ').value=e.results[0][0].transcript;askRun();};
+  r.onend=()=>{$('voiceBtn').style.color='';};r.onerror=()=>{$('voiceBtn').style.color='';};r.start();toast('Listening…');}
+
+/* PWA offline shell */
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/ui/sw.js').catch(()=>{});}
+
+window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openCmdk();}if(e.key==='Escape'){closeCmdk();closeDrawer();}});
+
+/* BOOT */
+(function(){const p=new URLSearchParams(location.search);const q=p.get('q'),ask=p.get('ask'),view=p.get('view');
+  if(q){setApp('diagnose');$('q').value=q;setTimeout(run,650);}
+  else if(ask){setApp('ask');$('askQ').value=ask;setTimeout(askRun,500);}
+  else{setApp(view&&RAIL.some(r=>r[0]===view)?view:'overview');}})();
+</script>
+</body>
+</html>

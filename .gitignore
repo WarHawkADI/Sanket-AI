@@ -1,0 +1,25 @@
+# Environment
+.env
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Large raw datasets (download via get_datasets.sh)
+data/raw/
+
+# Archives
+*.zip
+*.tar.gz
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/

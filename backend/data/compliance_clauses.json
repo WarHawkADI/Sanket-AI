@@ -1,0 +1,123 @@
+[
+  {
+    "id": "OISD-130-6.2",
+    "standard": "OISD-STD-130",
+    "title": "Inspection of Rotating Equipment",
+    "authority": "Oil Industry Safety Directorate (India)",
+    "applies_to": [
+      "CENTRIFUGAL_PUMP",
+      "CENTRIFUGAL_COMPRESSOR",
+      "ELECTRIC_MOTOR"
+    ],
+    "requirement": "Vibration and bearing-temperature monitoring of critical rotating equipment at defined intervals; records to be maintained and trended.",
+    "evidence_required": [
+      "VIBRATION_ANALYSIS",
+      "CONDITION_MONITORING"
+    ],
+    "max_interval_days": 90,
+    "severity_on_gap": "HIGH"
+  },
+  {
+    "id": "OISD-144-5.1",
+    "standard": "OISD-STD-144",
+    "title": "Inspection of Pressure Vessels & Storage",
+    "authority": "Oil Industry Safety Directorate (India)",
+    "applies_to": [
+      "STORAGE_VESSEL",
+      "HEAT_EXCHANGER"
+    ],
+    "requirement": "Periodic thickness survey and internal/external inspection of vessels and exchangers to detect corrosion/thinning.",
+    "evidence_required": [
+      "THICKNESS_SURVEY",
+      "FOULING_ASSESSMENT",
+      "VISUAL_INSPECTION"
+    ],
+    "max_interval_days": 365,
+    "severity_on_gap": "HIGH"
+  },
+  {
+    "id": "FACT-1948-21",
+    "standard": "Factories Act 1948 \u00a721",
+    "title": "Fencing & Safe Condition of Machinery",
+    "authority": "Ministry of Labour & Employment (India)",
+    "applies_to": [
+      "CENTRIFUGAL_PUMP",
+      "CENTRIFUGAL_COMPRESSOR",
+      "ELECTRIC_MOTOR"
+    ],
+    "requirement": "Moving parts of prime movers and transmission machinery must be securely fenced and maintained in safe condition.",
+    "evidence_required": [
+      "VISUAL_INSPECTION"
+    ],
+    "max_interval_days": 180,
+    "severity_on_gap": "MEDIUM"
+  },
+  {
+    "id": "PESO-SMPV-9",
+    "standard": "PESO / SMPV(U) Rules",
+    "title": "Pressure System Integrity",
+    "authority": "Petroleum & Explosives Safety Organisation (India)",
+    "applies_to": [
+      "CENTRIFUGAL_COMPRESSOR",
+      "STORAGE_VESSEL",
+      "CONTROL_VALVE"
+    ],
+    "requirement": "Pressure-containing systems handling hazardous fluids to be inspected and certified; relief and isolation devices tested.",
+    "evidence_required": [
+      "THICKNESS_SURVEY",
+      "CONDITION_MONITORING"
+    ],
+    "max_interval_days": 365,
+    "severity_on_gap": "HIGH"
+  },
+  {
+    "id": "ISO-10816-3",
+    "standard": "ISO 10816-3",
+    "title": "Mechanical Vibration Evaluation",
+    "authority": "International Organization for Standardization",
+    "applies_to": [
+      "CENTRIFUGAL_PUMP",
+      "CENTRIFUGAL_COMPRESSOR",
+      "ELECTRIC_MOTOR"
+    ],
+    "requirement": "Evaluation of machine vibration by measurements on non-rotating parts; operation beyond Zone C requires corrective action.",
+    "evidence_required": [
+      "VIBRATION_ANALYSIS",
+      "BASELINE_VIBRATION"
+    ],
+    "max_interval_days": 90,
+    "severity_on_gap": "MEDIUM"
+  },
+  {
+    "id": "API-610-lube",
+    "standard": "API 610 / API 614",
+    "title": "Lube-Oil System Cleanliness",
+    "authority": "American Petroleum Institute",
+    "applies_to": [
+      "CENTRIFUGAL_COMPRESSOR"
+    ],
+    "requirement": "Lube-oil systems for critical machinery to maintain specified cleanliness class; filtration \u0394P monitored.",
+    "evidence_required": [
+      "LUBE_OIL_ANALYSIS",
+      "CONDITION_MONITORING"
+    ],
+    "max_interval_days": 90,
+    "severity_on_gap": "HIGH"
+  },
+  {
+    "id": "CPCB-WATER-3",
+    "standard": "CPCB Consent Conditions",
+    "title": "Cooling-Water Discharge Quality",
+    "authority": "Central Pollution Control Board (India)",
+    "applies_to": [
+      "HEAT_EXCHANGER",
+      "STORAGE_VESSEL"
+    ],
+    "requirement": "Cooling-water treatment and blowdown to meet consent limits; scaling/biofouling controls documented.",
+    "evidence_required": [
+      "FOULING_ASSESSMENT"
+    ],
+    "max_interval_days": 180,
+    "severity_on_gap": "MEDIUM"
+  }
+]
