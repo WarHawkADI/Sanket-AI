@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -55,4 +56,5 @@ def root():
     return RedirectResponse(url="/ui/index.html")
 
 
-app.mount("/ui", StaticFiles(directory="frontend", html=True), name="frontend")
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+app.mount("/ui", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")

@@ -1,0 +1,14 @@
+.git/
+.venv/
+.pytest_cache/
+__pycache__/
+**/__pycache__/
+tests/
+scripts/
+backend/ingestion/
+data/raw/
+*.pdf
+*.mp4
+AI_PPT_Prompt.md
+docker-compose.yml
+get_datasets.sh

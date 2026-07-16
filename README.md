@@ -49,6 +49,38 @@ uvicorn backend.main:app --port 8000
 
 Open **http://localhost:8000** — the UI loads directly. Click a demo query → watch the graph flash upstream, the trace panel fire tools, citations open to real documents, and the metrics banner show answer-time vs. a ~4-hour manual search.
 
+### Deploy on Vercel
+
+This repository includes a root `app.py` entrypoint and `vercel.json`, so Vercel
+can discover the FastAPI application and bundle the frontend, seed data, and ML
+models with the Python function.
+
+1. Push the repository to GitHub, GitLab, or Bitbucket and import it in Vercel.
+2. Keep **Root Directory** set to the repository root and leave the Build and
+   Output Directory fields empty (Framework Preset may be FastAPI or automatic).
+3. In **Project Settings → Environment Variables**, add
+   `SANKET_FORCE_MEMSTORE=1` for Production, Preview, and Development.
+4. Deploy, then verify `https://YOUR-PROJECT.vercel.app/health`. It should report
+   `status: ok` and `store.backend: in-memory`.
+
+The UI is at the deployment root (which redirects to `/ui/index.html`). No
+Neo4j or Groq key is required for the deterministic demo. To enable the LLM
+agent, add `GROQ_API_KEY`. To use Neo4j, use a hosted Neo4j URI reachable from
+Vercel—`bolt://localhost:7687` points back at the serverless function and will
+not reach the Docker container on your computer.
+
+You can also deploy from a terminal with Vercel CLI 48.1.8 or newer:
+
+```bash
+npx vercel@latest
+npx vercel@latest --prod
+```
+
+Vercel functions have an ephemeral/read-only application filesystem. The seeded
+demo data is safe because it is read-only, but in-memory knowledge captures and
+ingested documents are not durable across cold starts. Use hosted Neo4j (or
+another persistent database) before relying on those write endpoints in production.
+
 ### Full mode (Neo4j graph + Groq LLM agent)
 
 ```bash
