@@ -1,2 +1,24 @@
-# Install all Python dependencies for the project from the repository root.
--r backend/requirements.txt
+# Vercel/runtime dependencies.
+#
+# Keep this list explicit: Vercel's requirements parser does not support pip's
+# `-r path/to/requirements.txt` include syntax. The larger local/development
+# dependency list remains in backend/requirements.txt.
+fastapi==0.115.12
+uvicorn==0.34.2
+python-dotenv==1.1.0
+aiofiles>=23.0.0
+
+# LLM agent. Imports are required at application startup even when the
+# deterministic mode is selected; GROQ_API_KEY itself remains optional.
+langgraph==0.3.34
+langchain-groq>=0.2.5
+groq>=0.9.0
+
+# Predictive-maintenance model and its serialized classifier.
+scikit-learn==1.6.1
+joblib==1.4.2
+numpy>=2.0
+
+# Optional hosted knowledge-graph backend. With SANKET_FORCE_MEMSTORE=1 this is
+# installed but no Neo4j connection is attempted.
+neo4j==5.28.1
