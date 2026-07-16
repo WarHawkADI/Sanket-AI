@@ -3,6 +3,8 @@
 > **ET AI Hackathon 2.0 · Problem VIII — Industrial Knowledge Intelligence**
 > A Unified Asset & Operations Brain that turns a plant's P&ID + CMMS history into a live reasoning engine.
 
+**Live demo:** [sanket-ai-pearl.vercel.app](https://sanket-ai-pearl.vercel.app)
+
 Sanket AI makes a plant's **physical topology the reasoning substrate**. When a pump vibrates, it traverses the P&ID equipment graph, pulls inspection logs and work orders for every upstream neighbour, correlates ISO-14224 co-failure statistics, and returns a **cited causal chain with a computed confidence** — not a document ranked by keyword similarity.
 
 ```
@@ -60,7 +62,7 @@ models with the Python function.
    Output Directory fields empty (Framework Preset may be FastAPI or automatic).
 3. In **Project Settings → Environment Variables**, add
    `SANKET_FORCE_MEMSTORE=1` for Production, Preview, and Development.
-4. Deploy, then verify `https://YOUR-PROJECT.vercel.app/health`. It should report
+4. Deploy, then verify [`https://sanket-ai-pearl.vercel.app/health`](https://sanket-ai-pearl.vercel.app/health). It should report
    `status: ok` and `store.backend: in-memory`.
 
 The UI is at the deployment root (which redirects to `/ui/index.html`). No
